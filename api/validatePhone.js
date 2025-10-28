@@ -1,30 +1,29 @@
-const {onRequest} = require("firebase-functions/v2/https");
 const twilio = require('twilio');
 
 /**
- * HTTP endpoint to validate phone numbers using Twilio Lookup API
- * Uses Firebase Functions v2 (2nd generation) with manual CORS headers
+ * Vercel Serverless Function to validate phone numbers using Twilio Lookup API
+ * Endpoint: /api/validatePhone
  */
-exports.validatePhone = onRequest({
-  timeoutSeconds: 60,
-  memory: "256MiB",
-  invoker: "public",
-}, async (req, res) => {
-  // Set CORS headers manually
-  const allowedOrigins = ['https://propscrub.web.app', 'http://localhost:3000', 'http://localhost:5000'];
+module.exports = async (req, res) => {
+  // Set CORS headers
+  const allowedOrigins = [
+    'https://propscrub.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173' // Vite default port
+  ];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
-    res.set('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
-  res.set('Access-Control-Max-Age', '3600');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Max-Age', '3600');
 
   // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
-    return res.status(204).send('');
+    return res.status(204).end();
   }
 
   // Only allow POST requests
@@ -102,4 +101,4 @@ exports.validatePhone = onRequest({
       error: error.message || 'Unknown error occurred'
     });
   }
-});
+};

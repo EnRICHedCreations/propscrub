@@ -17,10 +17,11 @@ PropScrubber is a React web application (NOT React Native) for cleaning, normali
   - `components/DataTable.tsx` - Display normalized and validated data
   - `components/ExportButton.tsx` - Export filtered CSV
 
-### Backend (Firebase Cloud Functions)
-- **Location**: `functions/` directory
-- **Function**: `validatePhone` - HTTP endpoint for Twilio Lookup API proxy
-- **Local URL**: `http://127.0.0.1:5001/PROJECT_ID/us-central1/validatePhone`
+### Backend (Vercel Serverless Functions)
+- **Location**: `api/` directory
+- **Function**: `validatePhone.js` - HTTP endpoint for Twilio Lookup API proxy
+- **Local URL**: `http://localhost:3000/api/validatePhone`
+- **Production URL**: `/api/validatePhone` (relative path, auto-resolves)
 - **Purpose**: Keeps Twilio credentials server-side, serverless scaling, CORS handling
 
 ### Core Utilities
@@ -54,37 +55,36 @@ PropScrubber is a React web application (NOT React Native) for cleaning, normali
 ```bash
 # Install dependencies
 npm install
-npm run functions:install
 
-# Set up Firebase
-firebase login
-firebase init  # Select Functions and Hosting
+# Install Vercel CLI
+npm install -g vercel
 
 # Configure Twilio credentials
-# Create functions/.env with:
+# Create .env file in project root:
 TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
 ```
 
 ### Running the Application
 ```bash
-# Terminal 1 - Start Firebase emulators
-npm run emulators
-
-# Terminal 2 - Start Vite dev server
+# Start Vercel dev server (handles both frontend and API)
 npm run dev
 ```
 
-The app will be available at `http://localhost:3000` and Firebase Functions at `http://127.0.0.1:5001`.
+The app will be available at `http://localhost:3000` with API at `http://localhost:3000/api/*`.
 
 ### Environment Configuration
-Create `functions/.env`:
+Create `.env` in project root:
 ```
 TWILIO_ACCOUNT_SID=your_account_sid
 TWILIO_AUTH_TOKEN=your_auth_token
 ```
 
-Update `src/utils/phoneValidation.ts` with your Firebase project ID in the FIREBASE_FUNCTION_URL constant.
+For production, set environment variables in Vercel Dashboard or via:
+```bash
+vercel env add TWILIO_ACCOUNT_SID
+vercel env add TWILIO_AUTH_TOKEN
+```
 
 ## Key Implementation Details
 
@@ -120,18 +120,18 @@ Filters combine with AND logic (all active filters must pass).
 
 ## Development Phases
 
-Follow the 11-phase plan in `DevelopmentPlan.md` (adapted for Firebase):
+Follow the 11-phase plan in `DevelopmentPlan.md` (adapted for Vercel):
 1. Project scaffold (Vite + React + TypeScript, folder structure)
 2. CSV upload & PapaParse integration
 3. Header normalization
-4. Backend API setup (Firebase Functions + Twilio)
+4. Backend API setup (Vercel Serverless Functions + Twilio)
 5. Phone validation integration
 6. Data filtering
 7. Data table display
 8. CSV export
 9. UI polish & error handling
 10. Testing & documentation
-11. Deployment (Firebase Hosting + Functions)
+11. Deployment (Vercel Hosting + Functions)
 
 Complete each phase sequentially and test before proceeding.
 
@@ -140,8 +140,8 @@ Complete each phase sequentially and test before proceeding.
 - **Web Only**: Use React with Vite, NOT React Native or Expo
 - **TypeScript Strict Mode**: Enable strict type checking
 - **No Emojis in Code**: Use lucide-react icons for UI (✓ → Check icon)
-- **Backend**: Firebase Cloud Functions (serverless), NOT Express.js
-- **CORS**: Firebase Function includes CORS middleware for all origins during development
+- **Backend**: Vercel Serverless Functions, NOT Express.js or Firebase
+- **CORS**: Vercel Function includes CORS middleware for allowed origins
 - **CSV Library**: Use PapaParse for parsing, json2csv for export (not custom implementations)
 - **Phone Format**: Twilio expects E.164 format (+1XXXXXXXXXX)
 
@@ -150,6 +150,6 @@ Complete each phase sequentially and test before proceeding.
 - **Don't normalize headers manually** - Use HEADER_MAP for extensibility
 - **Don't validate same phone twice** - Always check cache first
 - **Don't export all data** - Export filteredData, not cleanedData
-- **Don't store Twilio creds in frontend** - Use Firebase Functions with environment variables
+- **Don't store Twilio creds in frontend** - Use Vercel Functions with environment variables
 - **Don't batch API calls** - Twilio Lookup is single-phone-per-request
-- **Don't deploy without updating PROJECT_ID** - Update the Firebase project ID in phoneValidation.ts before deploying
+- **Don't forget env vars** - Set TWILIO credentials in Vercel Dashboard before deploying

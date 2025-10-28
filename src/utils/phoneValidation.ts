@@ -1,10 +1,11 @@
 import { ValidationResult, PhoneCache } from '../types';
 
-// Firebase Function endpoint
-// For local development: use Firebase emulator at localhost:5001
-// For production: use your deployed Firebase function URL
-const FIREBASE_FUNCTION_URL = import.meta.env.VITE_FIREBASE_FUNCTION_URL ||
-  'http://127.0.0.1:5001/propscrub/us-central1/validatePhone';
+// Vercel API endpoint
+// For local development: uses Vercel dev server at localhost:3000
+// For production: uses relative path /api/validatePhone (auto-resolves to deployed URL)
+const API_ENDPOINT = import.meta.env.PROD
+  ? '/api/validatePhone'
+  : 'http://localhost:3000/api/validatePhone';
 
 export const validatePhone = async (  
   phone: string,
@@ -23,7 +24,7 @@ export const validatePhone = async (
   }
 
   try {
-    const response = await fetch(FIREBASE_FUNCTION_URL, {
+    const response = await fetch(API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone })

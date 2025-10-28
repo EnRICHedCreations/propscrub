@@ -17,7 +17,8 @@ A React web application for cleaning, normalizing, and validating lead data from
 ## Tech Stack
 
 - **Frontend**: React 19 + TypeScript + Vite
-- **Backend**: Firebase Cloud Functions
+- **Backend**: Vercel Serverless Functions
+- **Hosting**: Vercel
 - **Phone Validation**: Twilio Lookup API v2
 - **CSV Processing**: PapaParse & json2csv
 - **UI Icons**: Lucide React
@@ -25,7 +26,7 @@ A React web application for cleaning, normalizing, and validating lead data from
 ## Prerequisites
 
 - Node.js 18+ and npm
-- Firebase account ([console.firebase.google.com](https://console.firebase.google.com))
+- Vercel account ([vercel.com](https://vercel.com))
 - Twilio account with Lookup API access ([twilio.com/console](https://www.twilio.com/console))
 - Modern web browser
 
@@ -34,107 +35,92 @@ A React web application for cleaning, normalizing, and validating lead data from
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd PropScrub
+git clone https://github.com/EnRICHedCreations/propscrub.git
+cd propscrub
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-# Install root dependencies
 npm install
-
-# Install Firebase Functions dependencies
-npm run functions:install
 ```
 
-### 3. Set Up Firebase
+### 3. Install Vercel CLI
 
 ```bash
-# Install Firebase CLI globally (if not already installed)
-npm install -g firebase-tools
-
-# Login to Firebase
-firebase login
-
-# Initialize Firebase (select Functions and Hosting)
-firebase init
-
-# Select your Firebase project or create a new one
+npm install -g vercel
 ```
 
-### 4. Configure Twilio Credentials
-
-Create a `functions/.env` file with your Twilio credentials:
+### 4. Link to Vercel Project
 
 ```bash
-TWILIO_ACCOUNT_SID=your_account_sid_here
-TWILIO_AUTH_TOKEN=your_auth_token_here
+vercel link
 ```
+
+### 5. Configure Environment Variables
+
+Set up Twilio credentials in Vercel:
+
+```bash
+vercel env add TWILIO_ACCOUNT_SID
+vercel env add TWILIO_AUTH_TOKEN
+```
+
+Or via Vercel Dashboard → Project Settings → Environment Variables:
+- `TWILIO_ACCOUNT_SID` - Your Twilio Account SID
+- `TWILIO_AUTH_TOKEN` - Your Twilio Auth Token
 
 Get your credentials from the [Twilio Console](https://console.twilio.com/).
 
-### 5. Update Firebase Function URL
-
-Edit `src/utils/phoneValidation.ts` and replace `YOUR_PROJECT_ID` with your actual Firebase project ID:
-
-```typescript
-const FIREBASE_FUNCTION_URL = import.meta.env.VITE_FIREBASE_FUNCTION_URL ||
-  'http://127.0.0.1:5001/your-actual-project-id/us-central1/validatePhone';
-```
-
 ## Development
 
-### Running Locally with Firebase Emulators
+### Running Locally
 
-**Terminal 1 - Start Firebase Emulators:**
-```bash
-npm run emulators
-```
+Start the Vercel development server (includes both frontend and API):
 
-This starts the Firebase Functions emulator at `http://127.0.0.1:5001`.
-
-**Terminal 2 - Start Vite Dev Server:**
 ```bash
 npm run dev
 ```
 
-This starts the React app at `http://localhost:3000`.
+This starts:
+- React app at `http://localhost:3000`
+- API endpoints at `http://localhost:3000/api/*`
+
+The Vercel dev server automatically handles both the frontend and serverless functions.
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Running Without Firebase Emulators (Production Mode)
-
-If you've already deployed your Firebase Functions:
-
-1. Set environment variable for production function URL:
-   ```bash
-   # Create .env.local file
-   echo "VITE_FIREBASE_FUNCTION_URL=https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/validatePhone" > .env.local
-   ```
-
-2. Run development server:
-   ```bash
-   npm run dev
-   ```
-
 ## Deployment
 
-### Deploy Firebase Functions
+### Deploy to Vercel
+
+#### Option 1: Automatic Deployment (Recommended)
+
+1. Push code to GitHub:
+   ```bash
+   git push origin master
+   ```
+
+2. Import project in Vercel:
+   - Go to [vercel.com/dashboard](https://vercel.com/dashboard)
+   - Click "Add New..." → "Project"
+   - Import your GitHub repository
+   - Add environment variables:
+     - `TWILIO_ACCOUNT_SID`
+     - `TWILIO_AUTH_TOKEN`
+   - Click "Deploy"
+
+3. Auto-deployment is now active:
+   - Every push to `master` automatically deploys to production
+   - Pull requests generate preview deployments
+
+#### Option 2: Manual Deployment via CLI
 
 ```bash
-npm run functions:deploy
+vercel --prod
 ```
 
-### Deploy Full Application (Functions + Hosting)
-
-```bash
-npm run deploy
-```
-
-This builds the React app and deploys both the frontend and Firebase Functions.
-
-Your app will be available at: `https://YOUR_PROJECT_ID.web.app`
+Your app will be available at: `https://your-project.vercel.app`
 
 ## Usage
 
@@ -199,8 +185,8 @@ To extend automatic mapping, edit `src/utils/headerMapping.ts`.
 
 ```
 PropScrub/
-├── functions/                 # Firebase Cloud Functions
-│   ├── index.js              # Phone validation endpoint
+├── api/                       # Vercel Serverless Functions
+│   ├── validatePhone.js      # Phone validation endpoint
 │   └── package.json
 ├── src/
 │   ├── components/           # React components
@@ -219,7 +205,7 @@ PropScrub/
 │   ├── App.tsx               # Main application
 │   ├── App.css               # Application styles
 │   └── main.tsx              # React entry point
-├── firebase.json             # Firebase configuration
+├── vercel.json               # Vercel configuration
 ├── package.json
 └── README.md
 ```
@@ -237,12 +223,15 @@ PropScrub uses Twilio Lookup API v2 with Line Type Intelligence:
 
 ### Environment Variables
 
-**Frontend (.env.local):**
+**Vercel Environment Variables (Production):**
+Set in Vercel Dashboard or via CLI:
 ```bash
-VITE_FIREBASE_FUNCTION_URL=https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/validatePhone
+TWILIO_ACCOUNT_SID=your_sid
+TWILIO_AUTH_TOKEN=your_token
 ```
 
-**Backend (functions/.env):**
+**Local Development:**
+Create `.env` file in project root:
 ```bash
 TWILIO_ACCOUNT_SID=your_sid
 TWILIO_AUTH_TOKEN=your_token
@@ -257,16 +246,16 @@ TWILIO_AUTH_TOKEN=your_token
 
 ## Troubleshooting
 
-### Functions Not Working Locally
+### API Not Working Locally
 
-Ensure Firebase emulators are running:
+Ensure Vercel dev server is running:
 ```bash
-npm run emulators
+npm run dev
 ```
 
 ### Twilio API Errors
 
-- Verify credentials in `functions/.env`
+- Verify credentials in Vercel environment variables
 - Check Twilio account balance
 - Ensure phone numbers are in E.164 format (+1XXXXXXXXXX)
 
@@ -274,23 +263,23 @@ npm run emulators
 
 Clear build cache and reinstall:
 ```bash
-rm -rf node_modules functions/node_modules dist
+rm -rf node_modules api/node_modules dist .vercel
 npm install
-npm run functions:install
 ```
 
 ### CORS Errors
 
-The Firebase Function includes CORS headers. If issues persist:
-1. Check Firebase Function logs: `firebase functions:log`
-2. Verify the function URL in `phoneValidation.ts`
+The Vercel function includes CORS headers. If issues persist:
+1. Check Vercel Function logs in dashboard
+2. Verify the API endpoint in `phoneValidation.ts`
 
 ## Development Tips
 
-- Use Firebase emulators for local development to avoid API costs
+- Use `vercel dev` for local development to test the full stack
 - Test with small CSV files first
 - Monitor Twilio usage in the Twilio Console
 - Check browser console for detailed error messages
+- View Vercel deployment logs for production debugging
 
 ## Future Enhancements
 
@@ -310,7 +299,7 @@ ISC
 
 For issues or questions:
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Review Firebase Functions logs: `firebase functions:log`
+2. Review Vercel deployment logs in dashboard
 3. Check browser console for errors
 4. Verify Twilio account status
 
@@ -318,7 +307,7 @@ For issues or questions:
 
 Built with:
 - [React](https://react.dev/)
-- [Firebase](https://firebase.google.com/)
+- [Vercel](https://vercel.com/)
 - [Twilio](https://www.twilio.com/)
 - [Vite](https://vitejs.dev/)
 - [PapaParse](https://www.papaparse.com/)
