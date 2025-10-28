@@ -1,0 +1,11 @@
+fname,lname,phone_number,email_address,address,contact,opportunity_name
+John,Doe,+14155552671,john.doe@example.com,123 Main St,Seller,House Sale
+Jane,Smith,+14155552672,jane.smith@example.com,456 Oak Ave,Buyer,Property Purchase
+Bob,Johnson,+14155552673,bob.johnson@example.com,789 Pine Rd,Seller,Land Sale
+Alice,Williams,+14155552671,alice.williams@example.com,321 Elm St,Buyer,Condo Purchase
+Charlie,Brown,,charlie.brown@example.com,654 Maple Dr,Seller,House Sale
+Emma,Davis,+14155552674,emma.davis@example.com,987 Cedar Ln,Buyer,Investment Property
+Frank,Miller,invalid-phone,frank.miller@example.com,147 Birch Ct,Seller,Commercial Sale
+Grace,Wilson,+14155552675,grace.wilson@example.com,258 Spruce Way,Buyer,First Home
+Henry,Moore,+14155552676,henry.moore@example.com,369 Willow Blvd,Seller,Rental Property
+Ivy,Taylor,+14155552674,ivy.taylor@example.com,741 Ash St,Buyer,Vacation Home

@@ -1,0 +1,437 @@
+import { useState, useMemo } from 'react';
+import { FileUpload } from './components/FileUpload';
+import { LoadingScreen } from './components/LoadingScreen';
+import { FilterSettingsComponent, FilterSettings } from './components/FilterSettings';
+import { FilterSettingsSection } from './components/FilterSettingsSection';
+import { DataTable } from './components/DataTable';
+import { ExportButton } from './components/ExportButton';
+import { HeaderMappingModal } from './components/HeaderMappingModal';
+import { BalanceDisplay } from './components/BalanceDisplay';
+import { PurchaseModal } from './components/PurchaseModal';
+import { CleanedRow, PhoneCache, RawRow } from './types';
+import { UserBalance, PurchaseOption, canAffordScrub, deductScrubCost } from './types/currency';
+import { parseCSV } from './utils/csvParser';
+import { normalizeRowWithCustomMapping } from './utils/headerMapping';
+import { validatePhone } from './utils/phoneValidation';
+import { validateEmail } from './utils/emailValidation';
+import { applyDataFilters } from './utils/dataFiltering';
+import { exportToCSV } from './utils/csvExport';
+import assignsLogo from './images/Assigns-Logo.png';
+import academyLogo from './images/Wholesailors-Academy-V2.webp';
+import './App.css';
+
+function App() {
+  const [rawData, setRawData] = useState<RawRow[]>([]);
+  const [cleanedData, setCleanedData] = useState<CleanedRow[]>([]);
+  const [isValidating, setIsValidating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState<string>('');
+  const [fileLoaded, setFileLoaded] = useState(false);
+  const [showMappingModal, setShowMappingModal] = useState(false);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [detectedHeaders, setDetectedHeaders] = useState<string[]>([]);
+  const [filterSettings, setFilterSettings] = useState<FilterSettings>({
+    removeDuplicates: true,
+    removeMissingPhone: true,
+    removeInvalidEmail: true,
+    removeInvalidPhone: true,
+    numberOfPhones: 1,
+    numberOfEmails: 1,
+    marketSearch: ''
+  });
+  const [userBalance, setUserBalance] = useState<UserBalance>({
+    bubbles: 100, // Start with 100 bubbles for testing
+    barsOfSoap: 1 // Start with 1 bar of soap for testing
+  });
+
+  const handleFileSelect = async (file: File) => {
+    try {
+      setError('');
+      setProgress(0);
+      setCleanedData([]);
+
+      // Parse CSV
+      const parsedData = await parseCSV(file);
+      if (parsedData.length === 0) {
+        setError('CSV file is empty');
+        return;
+      }
+
+      // Store raw data
+      setRawData(parsedData);
+
+      // Get detected headers
+      const headers = Object.keys(parsedData[0]);
+      setDetectedHeaders(headers);
+
+      // Show filter settings section
+      setFileLoaded(true);
+    } catch (err) {
+      setError(`Error processing file: ${err}`);
+      console.error(err);
+    }
+  };
+
+  const handleMapList = () => {
+    setShowMappingModal(true);
+  };
+
+  const handleMappingConfirm = async (customMapping: Record<string, string | string[]>) => {
+    // Check if user has enough balance
+    if (!canAffordScrub(userBalance)) {
+      setError('Insufficient balance! You need at least 5 Bubbles to scrub a list. Click the "Add" button in the header to purchase more.');
+      setShowMappingModal(false);
+      setShowPurchaseModal(true);
+      return;
+    }
+
+    setShowMappingModal(false);
+
+    try {
+      // Generate target headers based on filter settings
+      const targetHeaders: string[] = ["First Name", "Last Name", "Contact Type"];
+
+      // Add phone columns
+      for (let i = 1; i <= filterSettings.numberOfPhones; i++) {
+        targetHeaders.push(`Phone ${i}`);
+      }
+
+      // Add email columns
+      for (let i = 1; i <= filterSettings.numberOfEmails; i++) {
+        targetHeaders.push(`Email ${i}`);
+      }
+
+      // Add remaining fields
+      targetHeaders.push("Property Address", "Opportunity Name", "Stage", "Pipeline", "Tags");
+
+      // Normalize using custom mapping with dynamic headers
+      const normalizedData = rawData.map(row =>
+        normalizeRowWithCustomMapping(row, customMapping, targetHeaders)
+      );
+      setCleanedData(normalizedData);
+
+      // Deduct cost from balance
+      setUserBalance(deductScrubCost(userBalance));
+
+      // Start phone and email validation
+      await validateAllPhones(normalizedData, filterSettings.numberOfPhones, filterSettings.numberOfEmails);
+    } catch (err) {
+      setError(`Error processing data: ${err}`);
+      console.error(err);
+    }
+  };
+
+  const handlePurchase = (option: PurchaseOption) => {
+    // In development mode, simulate successful purchase
+    console.log('DEV MODE: Simulating purchase of', option.name);
+
+    const newBalance = { ...userBalance };
+    if (option.bubbles) {
+      newBalance.bubbles += option.bubbles;
+    }
+    if (option.barsOfSoap) {
+      newBalance.barsOfSoap += option.barsOfSoap;
+    }
+
+    setUserBalance(newBalance);
+    setShowPurchaseModal(false);
+
+    // Show success message
+    alert(`✅ Purchase Successful! (DEV MODE)\n\nYou received:\n${option.bubbles ? option.bubbles + ' Bubbles 💧' : ''}\n${option.barsOfSoap ? option.barsOfSoap + ' Bar(s) of Soap 🧼' : ''}`);
+  };
+
+  const handleMappingCancel = () => {
+    setShowMappingModal(false);
+  };
+
+  const validateAllPhones = async (rows: CleanedRow[], numberOfPhones: number, numberOfEmails: number) => {
+    setIsValidating(true);
+    setProgress(0);
+
+    const cache: PhoneCache = {};
+    const seenAddresses = new Set<string>();
+    const updatedRows = [...rows];
+
+    for (let i = 0; i < updatedRows.length; i++) {
+      const row = updatedRows[i];
+
+      // Check for duplicate addresses
+      const propertyAddress = String(row["Property Address"] || "").trim().toLowerCase();
+      if (propertyAddress && seenAddresses.has(propertyAddress)) {
+        row["Duplicate Phone"] = true; // Reusing this flag for duplicate addresses
+      } else if (propertyAddress) {
+        seenAddresses.add(propertyAddress);
+        row["Duplicate Phone"] = false;
+      }
+
+      // Validate all phone fields
+      let hasAnyPhone = false;
+      let anyPhoneValid = false;
+
+      for (let p = 1; p <= numberOfPhones; p++) {
+        const phoneField = `Phone ${p}`;
+        const phone = (row[phoneField] as string)?.trim() || '';
+
+        if (phone) {
+          hasAnyPhone = true;
+
+          // Validate phone via API
+          try {
+            const result = await validatePhone(phone, cache);
+            if (result.valid) {
+              anyPhoneValid = true;
+              row["Phone Type"] = result.type;
+            }
+          } catch (err) {
+            // Error during validation
+          }
+        }
+      }
+
+      // Set row-level phone flags
+      row["Missing Phone"] = !hasAnyPhone;
+      row["Phone Valid"] = anyPhoneValid;
+
+      // Validate all email fields
+      let hasAnyEmail = false;
+      let hasValidEmail = false;
+
+      for (let e = 1; e <= numberOfEmails; e++) {
+        const emailField = `Email ${e}`;
+        const email = (row[emailField] as string)?.trim() || '';
+
+        if (email) {
+          hasAnyEmail = true;
+          const emailResult = validateEmail(email);
+          if (emailResult.valid) {
+            hasValidEmail = true;
+          }
+        }
+      }
+
+      // Only mark as invalid if email exists but is invalid
+      // If no email exists, it's valid (not invalid)
+      row["Email Valid"] = !hasAnyEmail || hasValidEmail;
+
+      // Update progress
+      setProgress(Math.round(((i + 1) / updatedRows.length) * 100));
+    }
+
+    setCleanedData(updatedRows);
+    setIsValidating(false);
+  };
+
+  // Filter logic using new filter settings
+  const filteredData = useMemo(() => {
+    return applyDataFilters(cleanedData, filterSettings);
+  }, [cleanedData, filterSettings]);
+
+  const handleExport = () => {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `propscrub_cleaned_${timestamp}.csv`;
+      exportToCSV(filteredData, filename, filterSettings.numberOfPhones, filterSettings.numberOfEmails);
+    } catch (err) {
+      setError(`Error exporting CSV: ${err}`);
+    }
+  };
+
+  const handleCleanAnother = () => {
+    // Reset all state to start fresh
+    setRawData([]);
+    setCleanedData([]);
+    setFileLoaded(false);
+    setDetectedHeaders([]);
+    setError('');
+    setProgress(0);
+  };
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <div className="header-content">
+          <div className="header-left">
+            <img src={assignsLogo} alt="PropScrub" className="header-logo" />
+            <div className="header-text">
+              <span className="header-tagline">Clean, validate, and export lead data</span>
+            </div>
+          </div>
+          <div className="header-right">
+            <BalanceDisplay
+              balance={userBalance}
+              onPurchaseClick={() => setShowPurchaseModal(true)}
+            />
+            <a
+              href="https://www.skool.com/how-to-wholesale/about?ref=26880ff623564ca0a17ff78586c11984"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="academy-ad"
+            >
+              <img src={academyLogo} alt="Wholesailors Academy" className="academy-logo" />
+              <div className="academy-text">
+                <div className="academy-cta">Join the Wholesailors Academy</div>
+                <div className="academy-price">Just $0.50/day</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <main className="app-main">
+        <section className="upload-section">
+          <FileUpload
+            onFileSelect={handleFileSelect}
+            disabled={isValidating || fileLoaded}
+          />
+        </section>
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        {!isValidating && cleanedData.length === 0 && (
+          <>
+            <FilterSettingsSection
+              settings={filterSettings}
+              onSettingsChange={setFilterSettings}
+            />
+            {fileLoaded && (
+              <section className="action-buttons-section">
+                <button onClick={handleMapList} className="map-list-button">
+                  Map List
+                </button>
+              </section>
+            )}
+          </>
+        )}
+
+        {showMappingModal && (
+          <HeaderMappingModal
+            detectedHeaders={detectedHeaders}
+            numberOfPhones={filterSettings.numberOfPhones}
+            numberOfEmails={filterSettings.numberOfEmails}
+            onConfirm={handleMappingConfirm}
+            onCancel={handleMappingCancel}
+          />
+        )}
+
+        {showPurchaseModal && (
+          <PurchaseModal
+            onClose={() => setShowPurchaseModal(false)}
+            onPurchase={handlePurchase}
+          />
+        )}
+
+        {isValidating && (
+          <LoadingScreen progress={progress} />
+        )}
+
+        {cleanedData.length > 0 && !isValidating && (
+          <>
+            <section className="stats-section">
+              <div className="stats">
+                <div className="stat">
+                  <span className="stat-label">Total Rows:</span>
+                  <span className="stat-value">{cleanedData.length}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-label">Showing:</span>
+                  <span className="stat-value">{filteredData.length}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-label">Excluded:</span>
+                  <span className="stat-value">{cleanedData.length - filteredData.length}</span>
+                </div>
+              </div>
+            </section>
+
+            <section className="filter-section">
+              <FilterSettingsComponent
+                settings={filterSettings}
+                onSettingsChange={setFilterSettings}
+              />
+            </section>
+
+            <section className="table-section">
+              <DataTable
+                data={filteredData}
+                numberOfPhones={filterSettings.numberOfPhones}
+                numberOfEmails={filterSettings.numberOfEmails}
+              />
+            </section>
+
+            <section className="export-section">
+              <ExportButton
+                onExport={handleExport}
+                rowCount={filteredData.length}
+              />
+              <button onClick={handleCleanAnother} className="clean-another-button">
+                <span>Clean Another List</span>
+              </button>
+            </section>
+          </>
+        )}
+      </main>
+
+      <footer className="app-footer">
+        <div className="footer-ad-content">
+          <div className="footer-ad-left">
+            <a
+              href="https://www.skool.com/how-to-wholesale/about?ref=26880ff623564ca0a17ff78586c11984"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={academyLogo} alt="Wholesailors Academy" className="footer-academy-logo" />
+            </a>
+            <div className="footer-ad-text">
+              <h3 className="footer-ad-title">Ready to Master Wholesaling?</h3>
+              <p className="footer-ad-description">
+                Join 1,000+ students learning proven strategies to flip houses to hedge funds,
+                build portfolios, and scale their real estate wholesaling business.
+              </p>
+              <div className="footer-features">
+                <div className="footer-feature">
+                  <span className="feature-icon">✓</span>
+                  <span>Live Weekly Coaching</span>
+                </div>
+                <div className="footer-feature">
+                  <span className="feature-icon">✓</span>
+                  <span>Private Community Access</span>
+                </div>
+                <div className="footer-feature">
+                  <span className="feature-icon">✓</span>
+                  <span>Proven Deal Scripts & Templates</span>
+                </div>
+                <div className="footer-feature">
+                  <span className="feature-icon">✓</span>
+                  <span>Exclusive Buyer Network</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="footer-ad-right">
+            <div className="footer-cta-box">
+              <div className="footer-price-tag">
+                <span className="footer-price-label">START TODAY FOR ONLY</span>
+                <span className="footer-price">$0.50/day</span>
+                <span className="footer-price-subtext">That's just $15/month</span>
+              </div>
+              <a
+                href="https://www.skool.com/how-to-wholesale/about?ref=26880ff623564ca0a17ff78586c11984"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="footer-cta-btn"
+              >
+                Join Wholesailors Academy Now →
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
