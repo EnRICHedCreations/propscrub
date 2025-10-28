@@ -3,6 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "devCommand": "vite",
   "functions": {
     "api/**/*.js": {
       "memory": 256,
