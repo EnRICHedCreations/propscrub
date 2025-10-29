@@ -24,6 +24,11 @@ export interface ValidationResult {
   valid: boolean;
   type: string;
   carrier?: string;
+  liveStatus?: string; // LIVE, NOT_LIVE, ERROR, MISSING
+  isPorted?: boolean;
+  isRoaming?: boolean;
+  originalCarrier?: string;
+  currentCarrier?: string;
   error?: string;
 }
 

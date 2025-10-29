@@ -18,12 +18,15 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
   const columns = useMemo(() => {
     const cols: string[] = ["Status", "First Name", "Last Name", "Contact Type"];
 
-    // Add phone columns with Type and Carrier for Prison Scrub
+    // Add phone columns with HLR data for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
       cols.push(`Phone ${i}`);
       if (isPrisonScrub) {
+        cols.push(`Phone ${i} Status`);
         cols.push(`Phone ${i} Type`);
         cols.push(`Phone ${i} Carrier`);
+        cols.push(`Phone ${i} Ported`);
+        cols.push(`Phone ${i} Roaming`);
       }
     }
 

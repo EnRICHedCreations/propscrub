@@ -202,14 +202,23 @@ function App() {
                 // Store phone type and carrier for each phone number
                 row[`Phone ${p} Type`] = result.type || 'unknown';
                 row[`Phone ${p} Carrier`] = result.carrier || 'unknown';
+                row[`Phone ${p} Status`] = result.liveStatus || 'unknown';
+                row[`Phone ${p} Ported`] = result.isPorted ? 'Yes' : 'No';
+                row[`Phone ${p} Roaming`] = result.isRoaming ? 'Yes' : 'No';
               } else {
                 row[`Phone ${p} Type`] = 'invalid';
                 row[`Phone ${p} Carrier`] = 'N/A';
+                row[`Phone ${p} Status`] = result.liveStatus || 'INVALID';
+                row[`Phone ${p} Ported`] = 'N/A';
+                row[`Phone ${p} Roaming`] = 'N/A';
               }
             } catch (err) {
               // Error during validation
               row[`Phone ${p} Type`] = 'error';
               row[`Phone ${p} Carrier`] = 'N/A';
+              row[`Phone ${p} Status`] = 'ERROR';
+              row[`Phone ${p} Ported`] = 'N/A';
+              row[`Phone ${p} Roaming`] = 'N/A';
             }
           } else {
             // Basic Scrub: just check if phone exists

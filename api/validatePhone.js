@@ -1,7 +1,5 @@
-const twilio = require('twilio');
-
 /**
- * Vercel Serverless Function to validate phone numbers using Twilio Lookup API
+ * Vercel Serverless Function to validate phone numbers using HLRLookup.com API
  * Endpoint: /api/validatePhone
  */
 module.exports = async (req, res) => {
@@ -32,21 +30,19 @@ module.exports = async (req, res) => {
   }
 
   try {
-    // Get Twilio credentials from environment variables
-    const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
-    const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+    // Get HLRLookup credentials from environment variables
+    const apiKey = process.env.HLRLOOKUP_API_KEY;
+    const apiSecret = process.env.HLRLOOKUP_API_SECRET;
 
-    if (!twilioAccountSid || !twilioAuthToken) {
-      console.error('Twilio credentials not configured');
+    if (!apiKey || !apiSecret) {
+      console.error('HLRLookup credentials not configured');
       return res.status(500).json({
         valid: false,
         type: 'error',
-        error: 'Twilio credentials not configured'
+        liveStatus: 'ERROR',
+        error: 'HLRLookup credentials not configured'
       });
     }
-
-    // Initialize Twilio client
-    const twilioClient = twilio(twilioAccountSid, twilioAuthToken);
 
     const { phone } = req.body;
 
@@ -55,6 +51,7 @@ module.exports = async (req, res) => {
       return res.json({
         valid: false,
         type: 'missing',
+        liveStatus: 'MISSING',
         error: 'Phone number is required'
       });
     }
@@ -66,38 +63,76 @@ module.exports = async (req, res) => {
       return res.json({
         valid: false,
         type: 'missing',
+        liveStatus: 'MISSING',
         error: 'Phone number is empty'
       });
     }
 
-    // Call Twilio Lookup API v2
-    const lookup = await twilioClient.lookups.v2
-      .phoneNumbers(cleanPhone)
-      .fetch({ fields: 'line_type_intelligence' });
-
-    // Return successful validation result
-    return res.json({
-      valid: true,
-      type: lookup.lineTypeIntelligence?.type || 'unknown',
-      carrier: lookup.lineTypeIntelligence?.carrierName || 'unknown'
+    // Call HLRLookup API
+    const response = await fetch('https://api.hlrlookup.com/apiv2/hlr', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        api_key: apiKey,
+        api_secret: apiSecret,
+        requests: [{
+          telephone_number: cleanPhone
+        }]
+      })
     });
 
-  } catch (error) {
-    console.error('Twilio validation error:', error);
+    if (!response.ok) {
+      throw new Error(`HLRLookup API error: ${response.status}`);
+    }
 
-    // Handle Twilio-specific errors
-    if (error.status === 404) {
+    const data = await response.json();
+
+    // Extract result from HLRLookup response
+    const result = data.body?.results?.[0];
+
+    if (!result) {
+      throw new Error('Invalid response from HLRLookup API');
+    }
+
+    // Check for errors
+    if (result.error !== 'NONE') {
       return res.json({
         valid: false,
         type: 'invalid',
-        error: 'Invalid phone number format'
+        liveStatus: 'ERROR',
+        error: result.error
       });
     }
 
-    // Handle other errors
+    // Map HLRLookup response to our format
+    const isLive = result.live_status === 'LIVE';
+    const phoneType = result.telephone_number_type?.toLowerCase() || 'unknown';
+    const carrier = result.current_network_details?.name || result.original_network_details?.name || 'unknown';
+    const isPorted = result.is_ported === 'YES';
+    const isRoaming = result.current_network !== result.original_network && result.current_network !== 'UNAVAILABLE';
+
+    // Return successful validation result
+    return res.json({
+      valid: isLive,
+      type: phoneType,
+      carrier: carrier,
+      liveStatus: result.live_status,
+      isPorted: isPorted,
+      isRoaming: isRoaming,
+      originalCarrier: result.original_network_details?.name || 'unknown',
+      currentCarrier: result.current_network_details?.name || carrier
+    });
+
+  } catch (error) {
+    console.error('HLRLookup validation error:', error);
+
+    // Handle errors
     return res.json({
       valid: false,
       type: 'error',
+      liveStatus: 'ERROR',
       error: error.message || 'Unknown error occurred'
     });
   }

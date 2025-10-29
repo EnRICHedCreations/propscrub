@@ -45,10 +45,11 @@ export const VersionToggle = ({ currentVersion, onVersionChange }: VersionToggle
         ) : (
           <ul className="feature-list premium">
             <li>All Basic Scrub features</li>
-            <li>Phone number validation</li>
+            <li>Live phone status (LIVE/NOT LIVE)</li>
             <li>Phone type detection (mobile/landline/voip)</li>
             <li>Carrier identification</li>
-            <li>Invalid phone filtering</li>
+            <li>Ported number detection</li>
+            <li>Roaming status</li>
           </ul>
         )}
       </div>

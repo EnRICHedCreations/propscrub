@@ -1,12 +1,12 @@
 # PropScrub
 
-A React web application for cleaning, normalizing, and validating lead data from CSV files. PropScrub standardizes inconsistent CSV headers, validates phone numbers via Twilio Lookup API, detects duplicates and missing data, and exports filtered results.
+A React web application for cleaning, normalizing, and validating lead data from CSV files. PropScrub standardizes inconsistent CSV headers, validates phone numbers via HLRLookup.com API with live status checking, detects duplicates and missing data, and exports filtered results.
 
 ## Features
 
 - **CSV Upload & Parsing** - Import lead data from CSV files with any header format
 - **Smart Header Normalization** - Automatically maps inconsistent headers to a standardized schema
-- **Phone Validation** - Validates phone numbers using Twilio Lookup API v2
+- **Phone Validation** - Validates phone numbers using HLRLookup.com API with live status
 - **Duplicate Detection** - Identifies duplicate phone numbers across your dataset
 - **Missing Data Detection** - Flags rows with missing phone numbers
 - **Advanced Filtering** - Toggle visibility of duplicates, missing phones, and invalid phones
@@ -19,7 +19,7 @@ A React web application for cleaning, normalizing, and validating lead data from
 - **Frontend**: React 19 + TypeScript + Vite
 - **Backend**: Vercel Serverless Functions
 - **Hosting**: Vercel
-- **Phone Validation**: Twilio Lookup API v2
+- **Phone Validation**: HLRLookup.com API
 - **CSV Processing**: PapaParse & json2csv
 - **UI Icons**: Lucide React
 
@@ -27,7 +27,7 @@ A React web application for cleaning, normalizing, and validating lead data from
 
 - Node.js 18+ and npm
 - Vercel account ([vercel.com](https://vercel.com))
-- Twilio account with Lookup API access ([twilio.com/console](https://www.twilio.com/console))
+- HLRLookup.com account with API access ([hlrlookup.com](https://www.hlrlookup.com))
 - Modern web browser
 
 ## Installation
@@ -59,18 +59,18 @@ vercel link
 
 ### 5. Configure Environment Variables
 
-Set up Twilio credentials in Vercel:
+Set up HLRLookup credentials in Vercel:
 
 ```bash
-vercel env add TWILIO_ACCOUNT_SID
-vercel env add TWILIO_AUTH_TOKEN
+vercel env add HLRLOOKUP_API_KEY
+vercel env add HLRLOOKUP_API_SECRET
 ```
 
 Or via Vercel Dashboard → Project Settings → Environment Variables:
-- `TWILIO_ACCOUNT_SID` - Your Twilio Account SID
-- `TWILIO_AUTH_TOKEN` - Your Twilio Auth Token
+- `HLRLOOKUP_API_KEY` - Your HLRLookup API Key
+- `HLRLOOKUP_API_SECRET` - Your HLRLookup API Secret
 
-Get your credentials from the [Twilio Console](https://console.twilio.com/).
+Get your credentials from your [HLRLookup.com Dashboard](https://www.hlrlookup.com/dashboard).
 
 ## Development
 
@@ -138,7 +138,7 @@ Your app will be available at: `https://your-project.vercel.app`
    - Click "Confirm Mapping" to proceed or "Cancel" to start over
 
 3. **Automatic Processing**
-   - PropScrub validates all phone numbers via Twilio
+   - PropScrub validates all phone numbers via HLRLookup.com
    - Detects duplicates and missing data
    - Progress bar shows real-time validation status
 
@@ -212,29 +212,34 @@ PropScrub/
 
 ## Configuration
 
-### Twilio Lookup API
+### HLRLookup.com API
 
-PropScrub uses Twilio Lookup API v2 with Line Type Intelligence:
+PropScrub uses HLRLookup.com HLR Lookup API for comprehensive phone validation:
 - Validates phone number format
+- Live status detection (LIVE/NOT LIVE)
 - Returns phone type (mobile, landline, voip)
 - Provides carrier information
+- Detects ported numbers
+- Identifies roaming status
 
-**Pricing**: Check [Twilio Lookup Pricing](https://www.twilio.com/lookup/pricing) for current rates.
+**Pricing**: Starting at $0.0063 per lookup with volume discounts. Check [HLRLookup Pricing](https://www.hlrlookup.com/pricing) for current rates.
+
+**Cost Advantage**: 21% cheaper than alternatives with more features including live status checking!
 
 ### Environment Variables
 
 **Vercel Environment Variables (Production):**
 Set in Vercel Dashboard or via CLI:
 ```bash
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
+HLRLOOKUP_API_KEY=your_api_key
+HLRLOOKUP_API_SECRET=your_api_secret
 ```
 
 **Local Development:**
 Create `.env` file in project root:
 ```bash
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
+HLRLOOKUP_API_KEY=your_api_key
+HLRLOOKUP_API_SECRET=your_api_secret
 ```
 
 ## Performance
@@ -253,11 +258,11 @@ Ensure Vercel dev server is running:
 npm run dev
 ```
 
-### Twilio API Errors
+### HLRLookup API Errors
 
 - Verify credentials in Vercel environment variables
-- Check Twilio account balance
-- Ensure phone numbers are in E.164 format (+1XXXXXXXXXX)
+- Check HLRLookup account credit balance
+- Ensure phone numbers are in international format (E.164 recommended)
 
 ### Build Errors
 
@@ -277,7 +282,7 @@ The Vercel function includes CORS headers. If issues persist:
 
 - Use `vercel dev` for local development to test the full stack
 - Test with small CSV files first
-- Monitor Twilio usage in the Twilio Console
+- Monitor HLRLookup usage and credits in your dashboard
 - Check browser console for detailed error messages
 - View Vercel deployment logs for production debugging
 
@@ -301,14 +306,14 @@ For issues or questions:
 1. Check the [Troubleshooting](#troubleshooting) section
 2. Review Vercel deployment logs in dashboard
 3. Check browser console for errors
-4. Verify Twilio account status
+4. Verify HLRLookup account credit balance
 
 ## Credits
 
 Built with:
 - [React](https://react.dev/)
 - [Vercel](https://vercel.com/)
-- [Twilio](https://www.twilio.com/)
+- [HLRLookup.com](https://www.hlrlookup.com/)
 - [Vite](https://vitejs.dev/)
 - [PapaParse](https://www.papaparse.com/)
 - [Lucide Icons](https://lucide.dev/)

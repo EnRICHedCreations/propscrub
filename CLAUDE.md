@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PropScrubber is a React web application (NOT React Native) for cleaning, normalizing, and validating lead data from CSV files. The application standardizes inconsistent CSV headers, validates phone numbers via Twilio Lookup API, detects duplicates and missing data, and exports filtered results.
+PropScrubber is a React web application (NOT React Native) for cleaning, normalizing, and validating lead data from CSV files. The application standardizes inconsistent CSV headers, validates phone numbers via HLRLookup.com API with live status checking, detects duplicates and missing data, and exports filtered results.
 
 ## Architecture
 
@@ -19,10 +19,10 @@ PropScrubber is a React web application (NOT React Native) for cleaning, normali
 
 ### Backend (Vercel Serverless Functions)
 - **Location**: `api/` directory
-- **Function**: `validatePhone.js` - HTTP endpoint for Twilio Lookup API proxy
+- **Function**: `validatePhone.js` - HTTP endpoint for HLRLookup.com API proxy
 - **Local URL**: `http://localhost:3000/api/validatePhone`
 - **Production URL**: `/api/validatePhone` (relative path, auto-resolves)
-- **Purpose**: Keeps Twilio credentials server-side, serverless scaling, CORS handling
+- **Purpose**: Keeps HLRLookup credentials server-side, serverless scaling, CORS handling
 
 ### Core Utilities
 - `utils/headerMapping.ts` - Maps inconsistent CSV headers to standardized schema
@@ -38,8 +38,8 @@ PropScrubber is a React web application (NOT React Native) for cleaning, normali
 ### Type System
 - `types/index.ts` defines:
   - `RawRow`: Unprocessed CSV data with arbitrary headers
-  - `CleanedRow`: Normalized data with validation flags (Missing Phone, Duplicate Phone, Phone Valid, Phone Type)
-  - `ValidationResult`: Twilio API response structure
+  - `CleanedRow`: Normalized data with validation flags (Missing Phone, Duplicate Phone, Phone Valid, Phone Type, Phone Status, Phone Carrier, Phone Ported, Phone Roaming)
+  - `ValidationResult`: HLRLookup.com API response structure with HLR data (liveStatus, isPorted, isRoaming, carrier info)
 
 ## Data Flow
 
@@ -59,10 +59,10 @@ npm install
 # Install Vercel CLI
 npm install -g vercel
 
-# Configure Twilio credentials
+# Configure HLRLookup credentials
 # Create .env file in project root:
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
+HLRLOOKUP_API_KEY=your_api_key
+HLRLOOKUP_API_SECRET=your_api_secret
 ```
 
 ### Running the Application
@@ -76,14 +76,14 @@ The app will be available at `http://localhost:3000` with API at `http://localho
 ### Environment Configuration
 Create `.env` in project root:
 ```
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
+HLRLOOKUP_API_KEY=your_api_key
+HLRLOOKUP_API_SECRET=your_api_secret
 ```
 
 For production, set environment variables in Vercel Dashboard or via:
 ```bash
-vercel env add TWILIO_ACCOUNT_SID
-vercel env add TWILIO_AUTH_TOKEN
+vercel env add HLRLOOKUP_API_KEY
+vercel env add HLRLOOKUP_API_SECRET
 ```
 
 ## Key Implementation Details
@@ -98,11 +98,16 @@ vercel env add TWILIO_AUTH_TOKEN
 - **Duplicate Detection**: Uses Set to track seen phone numbers in order
 - **Batch Processing**: Processes rows sequentially with progress updates
 - **Rate Limiting**: For large datasets (>1000 rows), implement chunking and delays
-- **Validation Flags**:
+- **Validation Flags** (Basic Scrub):
   - `Missing Phone`: No phone number in row
   - `Duplicate Phone`: Phone number appeared earlier in CSV
-  - `Phone Valid`: Twilio validated successfully
+- **HLR Validation Flags** (Prison Scrub only):
+  - `Phone Valid`: HLRLookup validated successfully
   - `Phone Type`: mobile/landline/voip/invalid/missing/error
+  - `Phone Status`: LIVE/NOT_LIVE status from HLR lookup
+  - `Phone Carrier`: Current carrier name
+  - `Phone Ported`: Yes/No - indicates if number was ported
+  - `Phone Roaming`: Yes/No - current roaming status
 
 ### Filter Logic
 Filters are **inclusive** by default (show all). When toggled off:
@@ -124,8 +129,8 @@ Follow the 11-phase plan in `DevelopmentPlan.md` (adapted for Vercel):
 1. Project scaffold (Vite + React + TypeScript, folder structure)
 2. CSV upload & PapaParse integration
 3. Header normalization
-4. Backend API setup (Vercel Serverless Functions + Twilio)
-5. Phone validation integration
+4. Backend API setup (Vercel Serverless Functions + HLRLookup.com)
+5. Phone validation integration (Prison Scrub tier with HLR data)
 6. Data filtering
 7. Data table display
 8. CSV export
@@ -143,13 +148,14 @@ Complete each phase sequentially and test before proceeding.
 - **Backend**: Vercel Serverless Functions, NOT Express.js or Firebase
 - **CORS**: Vercel Function includes CORS middleware for allowed origins
 - **CSV Library**: Use PapaParse for parsing, json2csv for export (not custom implementations)
-- **Phone Format**: Twilio expects E.164 format (+1XXXXXXXXXX)
+- **Phone Format**: HLRLookup expects E.164 format (+1XXXXXXXXXX)
 
 ## Common Pitfalls
 
 - **Don't normalize headers manually** - Use HEADER_MAP for extensibility
 - **Don't validate same phone twice** - Always check cache first
 - **Don't export all data** - Export filteredData, not cleanedData
-- **Don't store Twilio creds in frontend** - Use Vercel Functions with environment variables
-- **Don't batch API calls** - Twilio Lookup is single-phone-per-request
-- **Don't forget env vars** - Set TWILIO credentials in Vercel Dashboard before deploying
+- **Don't store HLRLookup creds in frontend** - Use Vercel Functions with environment variables
+- **Don't batch API calls** - HLRLookup is single-phone-per-request
+- **Don't forget env vars** - Set HLRLOOKUP credentials in Vercel Dashboard before deploying
+- **Don't validate in Basic Scrub** - Phone validation (HLR data) is Prison Scrub only

@@ -44,12 +44,15 @@ const generateExportFields = (numberOfPhones: number, numberOfEmails: number, is
   fields.push("Last Name");
   fields.push("Contact Type");
 
-  // Add multiple phone columns with Type and Carrier for Prison Scrub
+  // Add multiple phone columns with HLR data for Prison Scrub
   for (let i = 1; i <= numberOfPhones; i++) {
     fields.push(`Phone ${i}`);
     if (isPrisonScrub) {
+      fields.push(`Phone ${i} Status`);
       fields.push(`Phone ${i} Type`);
       fields.push(`Phone ${i} Carrier`);
+      fields.push(`Phone ${i} Ported`);
+      fields.push(`Phone ${i} Roaming`);
     }
   }
 
@@ -90,14 +93,17 @@ const transformDataForExport = (
     transformed["Pipeline"] = String(row["Pipeline"] || "");
     transformed["Tags"] = String(row["Tags"] || "");
 
-    // Add phone columns with Type and Carrier for Prison Scrub
+    // Add phone columns with HLR data for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
       const phoneField = `Phone ${i}`;
       transformed[phoneField] = String(row[phoneField] || "");
 
       if (isPrisonScrub) {
+        transformed[`Phone ${i} Status`] = String(row[`Phone ${i} Status`] || "");
         transformed[`Phone ${i} Type`] = String(row[`Phone ${i} Type`] || "");
         transformed[`Phone ${i} Carrier`] = String(row[`Phone ${i} Carrier`] || "");
+        transformed[`Phone ${i} Ported`] = String(row[`Phone ${i} Ported`] || "");
+        transformed[`Phone ${i} Roaming`] = String(row[`Phone ${i} Roaming`] || "");
       }
     }
 

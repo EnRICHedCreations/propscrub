@@ -1,8 +1,6 @@
 {
   "name": "propscrub-api",
   "version": "1.0.0",
-  "description": "Vercel serverless functions for PropScrubber",
-  "dependencies": {
-    "twilio": "^5.3.5"
-  }
+  "description": "Vercel serverless functions for PropScrubber - HLRLookup.com integration",
+  "dependencies": {}
 }
