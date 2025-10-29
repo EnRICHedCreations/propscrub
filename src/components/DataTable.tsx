@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CleanedRow } from '../types';
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface DataTableProps {
   data: CleanedRow[];
@@ -9,10 +9,28 @@ interface DataTableProps {
   isPrisonScrub?: boolean;
 }
 
+const RECORDS_PER_PAGE = 50;
+
 export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numberOfEmails, isPrisonScrub = false }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
   if (data.length === 0) {
     return <div className="no-data">No data to display</div>;
   }
+
+  // Calculate pagination
+  const totalPages = Math.ceil(data.length / RECORDS_PER_PAGE);
+  const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
+  const endIndex = Math.min(startIndex + RECORDS_PER_PAGE, data.length);
+  const paginatedData = data.slice(startIndex, endIndex);
+
+  const handlePrevPage = () => {
+    setCurrentPage(prev => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => Math.min(totalPages, prev + 1));
+  };
 
   // Generate column headers matching export format
   const columns = useMemo(() => {
@@ -71,6 +89,28 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
 
   return (
     <div className="data-table-container">
+      <div className="pagination-controls">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="pagination-button"
+        >
+          <ChevronLeft size={20} />
+          Previous
+        </button>
+        <span className="pagination-info">
+          Page {currentPage} of {totalPages} | Showing {startIndex + 1}-{endIndex} of {data.length} records
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="pagination-button"
+        >
+          Next
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
       <table className="data-table">
         <thead>
           <tr>
@@ -80,8 +120,8 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
-            <tr key={index} className={getRowClassName(row)}>
+          {paginatedData.map((row, index) => (
+            <tr key={startIndex + index} className={getRowClassName(row)}>
               {columns.map((col, colIndex) => (
                 <React.Fragment key={colIndex}>
                   {renderCell(row, col)}
@@ -91,6 +131,28 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
           ))}
         </tbody>
       </table>
+
+      <div className="pagination-controls">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="pagination-button"
+        >
+          <ChevronLeft size={20} />
+          Previous
+        </button>
+        <span className="pagination-info">
+          Page {currentPage} of {totalPages} | Showing {startIndex + 1}-{endIndex} of {data.length} records
+        </span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="pagination-button"
+        >
+          Next
+          <ChevronRight size={20} />
+        </button>
+      </div>
     </div>
   );
 };

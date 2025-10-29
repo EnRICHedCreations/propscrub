@@ -423,6 +423,16 @@ function App() {
               />
             </section>
 
+            <section className="top-export-section">
+              <ExportButton
+                onExport={handleExport}
+                rowCount={filteredData.length}
+              />
+              <button onClick={handleCleanAnother} className="clean-another-button">
+                <span>Clean New List</span>
+              </button>
+            </section>
+
             <section className="table-section">
               <DataTable
                 data={filteredData}
