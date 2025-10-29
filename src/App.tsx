@@ -295,7 +295,14 @@ function App() {
       <header className="app-header">
         <div className="header-content">
           <div className="header-left">
-            <img src={assignsLogo} alt="PropScrub" className="header-logo" />
+            <img
+              src={assignsLogo}
+              alt="PropScrub"
+              className="header-logo clickable"
+              onClick={handleCleanAnother}
+              style={{ cursor: 'pointer' }}
+              title="Return to home"
+            />
             <div className="header-text">
               <span className="header-tagline">Clean, validate, and export lead data</span>
             </div>

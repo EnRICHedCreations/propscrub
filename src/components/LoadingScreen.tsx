@@ -31,8 +31,8 @@ export const LoadingScreen = ({ progress }: LoadingScreenProps) => {
       id: i,
       left: Math.random() * 100, // Random position 0-100%
       size: Math.random() * 60 + 20, // Size between 20-80px
-      delay: Math.random() * 2, // Delay between 0-2s (faster start)
-      duration: Math.random() * 3 + 2, // Duration between 2-5s (faster float)
+      delay: Math.random() * 2, // Delay between 0-2s
+      duration: Math.random() * 3.75 + 2.5, // Duration between 2.5-6.25s (25% slower)
     }));
     setBubbles(newBubbles);
   }, []);
