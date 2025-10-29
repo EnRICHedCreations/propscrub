@@ -22,32 +22,32 @@ export const PURCHASE_OPTIONS: PurchaseOption[] = [
     id: 'bubbles_50',
     name: '50 Bubbles',
     bubbles: 50,
-    priceUSD: 5.00
+    priceUSD: 2.50
   },
   {
     id: 'bubbles_125',
     name: '125 Bubbles',
     bubbles: 125,
-    priceUSD: 10.00
+    priceUSD: 6.25
   },
   {
     id: 'soap_1',
     name: '1 Bar of Soap',
     barsOfSoap: 1,
-    priceUSD: 20.00,
+    priceUSD: 5.00,
     popular: true
   },
   {
     id: 'soap_3',
     name: '3 Bars of Soap',
     barsOfSoap: 3,
-    priceUSD: 50.00
+    priceUSD: 15.00
   },
   {
     id: 'soap_10',
     name: '10 Bars of Soap',
     barsOfSoap: 10,
-    priceUSD: 150.00
+    priceUSD: 50.00
   }
 ];
 

@@ -154,6 +154,9 @@ function App() {
     setIsValidating(true);
     setProgress(0);
 
+    // Small delay to ensure loading screen renders
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     const cache: PhoneCache = {};
     const seenAddresses = new Set<string>();
     const updatedRows = [...rows];
@@ -232,7 +235,17 @@ function App() {
       row["Email Valid"] = !hasAnyEmail || hasValidEmail;
 
       // Update progress
-      setProgress(Math.round(((i + 1) / updatedRows.length) * 100));
+      const currentProgress = Math.round(((i + 1) / updatedRows.length) * 100);
+      setProgress(currentProgress);
+
+      // Add delay to simulate processing and show loading screen progress
+      // For Basic Scrub: ~30ms per row, Prison Scrub: natural API delay
+      if (!isPrisonScrub) {
+        await new Promise(resolve => setTimeout(resolve, 30));
+      } else if ((i + 1) % 5 === 0) {
+        // For Prison Scrub, yield every 5 rows for UI updates
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
     }
 
     setCleanedData(updatedRows);
