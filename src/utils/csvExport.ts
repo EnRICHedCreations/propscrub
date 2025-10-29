@@ -36,7 +36,7 @@ const convertToCSV = (data: CleanedRow[], fields: string[]): string => {
 /**
  * Generates dynamic export fields based on phone/email column counts
  */
-const generateExportFields = (numberOfPhones: number, numberOfEmails: number): string[] => {
+const generateExportFields = (numberOfPhones: number, numberOfEmails: number, isPrisonScrub: boolean): string[] => {
   const fields: string[] = [];
 
   // Add fields in the order they should appear
@@ -44,9 +44,13 @@ const generateExportFields = (numberOfPhones: number, numberOfEmails: number): s
   fields.push("Last Name");
   fields.push("Contact Type");
 
-  // Add multiple phone columns
+  // Add multiple phone columns with Type and Carrier for Prison Scrub
   for (let i = 1; i <= numberOfPhones; i++) {
     fields.push(`Phone ${i}`);
+    if (isPrisonScrub) {
+      fields.push(`Phone ${i} Type`);
+      fields.push(`Phone ${i} Carrier`);
+    }
   }
 
   // Add multiple email columns
@@ -70,7 +74,8 @@ const generateExportFields = (numberOfPhones: number, numberOfEmails: number): s
 const transformDataForExport = (
   data: CleanedRow[],
   numberOfPhones: number,
-  numberOfEmails: number
+  numberOfEmails: number,
+  isPrisonScrub: boolean
 ): Record<string, string>[] => {
   return data.map(row => {
     const transformed: Record<string, string> = {};
@@ -85,10 +90,15 @@ const transformDataForExport = (
     transformed["Pipeline"] = String(row["Pipeline"] || "");
     transformed["Tags"] = String(row["Tags"] || "");
 
-    // Add phone columns (get from row data)
+    // Add phone columns with Type and Carrier for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
       const phoneField = `Phone ${i}`;
       transformed[phoneField] = String(row[phoneField] || "");
+
+      if (isPrisonScrub) {
+        transformed[`Phone ${i} Type`] = String(row[`Phone ${i} Type`] || "");
+        transformed[`Phone ${i} Carrier`] = String(row[`Phone ${i} Carrier`] || "");
+      }
     }
 
     // Add email columns (get from row data)
@@ -108,11 +118,12 @@ export const exportToCSV = (
   data: CleanedRow[],
   filename: string,
   numberOfPhones: number = 1,
-  numberOfEmails: number = 1
+  numberOfEmails: number = 1,
+  isPrisonScrub: boolean = false
 ) => {
   try {
-    const exportFields = generateExportFields(numberOfPhones, numberOfEmails);
-    const transformedData = transformDataForExport(data, numberOfPhones, numberOfEmails);
+    const exportFields = generateExportFields(numberOfPhones, numberOfEmails, isPrisonScrub);
+    const transformedData = transformDataForExport(data, numberOfPhones, numberOfEmails, isPrisonScrub);
 
     const csv = convertToCSV(transformedData as any, exportFields);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

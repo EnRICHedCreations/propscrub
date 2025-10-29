@@ -6,9 +6,10 @@ interface DataTableProps {
   data: CleanedRow[];
   numberOfPhones: number;
   numberOfEmails: number;
+  isPrisonScrub?: boolean;
 }
 
-export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numberOfEmails }) => {
+export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numberOfEmails, isPrisonScrub = false }) => {
   if (data.length === 0) {
     return <div className="no-data">No data to display</div>;
   }
@@ -17,9 +18,13 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
   const columns = useMemo(() => {
     const cols: string[] = ["Status", "First Name", "Last Name", "Contact Type"];
 
-    // Add phone columns
+    // Add phone columns with Type and Carrier for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
       cols.push(`Phone ${i}`);
+      if (isPrisonScrub) {
+        cols.push(`Phone ${i} Type`);
+        cols.push(`Phone ${i} Carrier`);
+      }
     }
 
     // Add email columns
@@ -31,7 +36,7 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
     cols.push("Property Address", "Opportunity Name", "Stage", "Pipeline", "Tags");
 
     return cols;
-  }, [numberOfPhones, numberOfEmails]);
+  }, [numberOfPhones, numberOfEmails, isPrisonScrub]);
 
   const getValidationIcon = (row: CleanedRow) => {
     if (row["Missing Phone"]) {

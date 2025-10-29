@@ -8,8 +8,9 @@ import { ExportButton } from './components/ExportButton';
 import { HeaderMappingModal } from './components/HeaderMappingModal';
 import { BalanceDisplay } from './components/BalanceDisplay';
 import { PurchaseModal } from './components/PurchaseModal';
+import { VersionToggle, ScrubVersion } from './components/VersionToggle';
 import { CleanedRow, PhoneCache, RawRow } from './types';
-import { UserBalance, PurchaseOption, canAffordScrub, deductScrubCost } from './types/currency';
+import { UserBalance, PurchaseOption, canAffordScrub, deductScrubCost, calculateScrubCost } from './types/currency';
 import { parseCSV } from './utils/csvParser';
 import { normalizeRowWithCustomMapping } from './utils/headerMapping';
 import { validatePhone } from './utils/phoneValidation';
@@ -30,6 +31,7 @@ function App() {
   const [showMappingModal, setShowMappingModal] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [detectedHeaders, setDetectedHeaders] = useState<string[]>([]);
+  const [scrubVersion, setScrubVersion] = useState<ScrubVersion>('prison');
   const [filterSettings, setFilterSettings] = useState<FilterSettings>({
     removeDuplicates: true,
     removeMissingPhone: true,
@@ -77,9 +79,13 @@ function App() {
   };
 
   const handleMappingConfirm = async (customMapping: Record<string, string | string[]>) => {
+    const isPrisonScrub = scrubVersion === 'prison';
+    const recordCount = rawData.length;
+    const cost = calculateScrubCost(recordCount, isPrisonScrub);
+
     // Check if user has enough balance
-    if (!canAffordScrub(userBalance)) {
-      setError('Insufficient balance! You need at least 5 Bubbles to scrub a list. Click the "Add" button in the header to purchase more.');
+    if (!canAffordScrub(userBalance, recordCount, isPrisonScrub)) {
+      setError(`Insufficient balance! You need ${cost} Bubbles to scrub ${recordCount} records with ${isPrisonScrub ? 'Prison Scrub' : 'Basic Scrub'}. Click the "Add" button in the header to purchase more.`);
       setShowMappingModal(false);
       setShowPurchaseModal(true);
       return;
@@ -111,10 +117,10 @@ function App() {
       setCleanedData(normalizedData);
 
       // Deduct cost from balance
-      setUserBalance(deductScrubCost(userBalance));
+      setUserBalance(deductScrubCost(userBalance, recordCount, isPrisonScrub));
 
       // Start phone and email validation
-      await validateAllPhones(normalizedData, filterSettings.numberOfPhones, filterSettings.numberOfEmails);
+      await validateAllPhones(normalizedData, filterSettings.numberOfPhones, filterSettings.numberOfEmails, isPrisonScrub);
     } catch (err) {
       setError(`Error processing data: ${err}`);
       console.error(err);
@@ -144,7 +150,7 @@ function App() {
     setShowMappingModal(false);
   };
 
-  const validateAllPhones = async (rows: CleanedRow[], numberOfPhones: number, numberOfEmails: number) => {
+  const validateAllPhones = async (rows: CleanedRow[], numberOfPhones: number, numberOfEmails: number, isPrisonScrub: boolean) => {
     setIsValidating(true);
     setProgress(0);
 
@@ -175,15 +181,27 @@ function App() {
         if (phone) {
           hasAnyPhone = true;
 
-          // Validate phone via API
-          try {
-            const result = await validatePhone(phone, cache);
-            if (result.valid) {
-              anyPhoneValid = true;
-              row["Phone Type"] = result.type;
+          // Only validate phone via API if Prison Scrub is enabled
+          if (isPrisonScrub) {
+            try {
+              const result = await validatePhone(phone, cache);
+              if (result.valid) {
+                anyPhoneValid = true;
+                // Store phone type and carrier for each phone number
+                row[`Phone ${p} Type`] = result.type || 'unknown';
+                row[`Phone ${p} Carrier`] = result.carrier || 'unknown';
+              } else {
+                row[`Phone ${p} Type`] = 'invalid';
+                row[`Phone ${p} Carrier`] = 'N/A';
+              }
+            } catch (err) {
+              // Error during validation
+              row[`Phone ${p} Type`] = 'error';
+              row[`Phone ${p} Carrier`] = 'N/A';
             }
-          } catch (err) {
-            // Error during validation
+          } else {
+            // Basic Scrub: just check if phone exists
+            anyPhoneValid = true;
           }
         }
       }
@@ -230,7 +248,7 @@ function App() {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
       const filename = `propscrub_cleaned_${timestamp}.csv`;
-      exportToCSV(filteredData, filename, filterSettings.numberOfPhones, filterSettings.numberOfEmails);
+      exportToCSV(filteredData, filename, filterSettings.numberOfPhones, filterSettings.numberOfEmails, scrubVersion === 'prison');
     } catch (err) {
       setError(`Error exporting CSV: ${err}`);
     }
@@ -278,6 +296,15 @@ function App() {
       </header>
 
       <main className="app-main">
+        {cleanedData.length === 0 && (
+          <section className="version-section">
+            <VersionToggle
+              currentVersion={scrubVersion}
+              onVersionChange={setScrubVersion}
+            />
+          </section>
+        )}
+
         <section className="upload-section">
           <FileUpload
             onFileSelect={handleFileSelect}
@@ -359,6 +386,7 @@ function App() {
                 data={filteredData}
                 numberOfPhones={filterSettings.numberOfPhones}
                 numberOfEmails={filterSettings.numberOfEmails}
+                isPrisonScrub={scrubVersion === 'prison'}
               />
             </section>
 
