@@ -27,12 +27,12 @@ export const LoadingScreen = ({ progress }: LoadingScreenProps) => {
 
   useEffect(() => {
     // Generate random bubbles
-    const newBubbles = Array.from({ length: 20 }, (_, i) => ({
+    const newBubbles = Array.from({ length: 30 }, (_, i) => ({
       id: i,
       left: Math.random() * 100, // Random position 0-100%
       size: Math.random() * 60 + 20, // Size between 20-80px
-      delay: Math.random() * 5, // Delay between 0-5s
-      duration: Math.random() * 10 + 10, // Duration between 10-20s
+      delay: Math.random() * 2, // Delay between 0-2s (faster start)
+      duration: Math.random() * 3 + 2, // Duration between 2-5s (faster float)
     }));
     setBubbles(newBubbles);
   }, []);
