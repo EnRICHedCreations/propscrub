@@ -1809,9 +1809,7 @@
 
 /* Version Toggle Styles */
 .version-section {
-  max-width: 900px;
-  margin: 0 auto 2rem;
-  padding: 0 1rem;
+  margin: 0 0 2rem;
 }
 
 .version-toggle-wrapper {
