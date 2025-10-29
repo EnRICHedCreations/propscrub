@@ -157,9 +157,14 @@ function App() {
     // Small delay to ensure loading screen renders
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    // For Basic Scrub, calculate delay to ensure 8 second minimum loading time
-    const targetLoadingTime = 8000; // 8 seconds in milliseconds
-    const delayPerRow = !isPrisonScrub ? Math.max(targetLoadingTime / rows.length, 50) : 0;
+    // For Basic Scrub, calculate delay to ensure 6 second minimum loading time
+    const targetLoadingTime = 6000; // 6 seconds in milliseconds
+    const totalRows = rows.length;
+
+    // Calculate how many progress updates to make (max 100, or number of rows if less)
+    const progressSteps = Math.min(100, totalRows);
+    const rowsPerStep = Math.ceil(totalRows / progressSteps);
+    const delayPerStep = !isPrisonScrub ? targetLoadingTime / progressSteps : 0;
 
     const cache: PhoneCache = {};
     const seenAddresses = new Set<string>();
@@ -238,17 +243,21 @@ function App() {
       // If no email exists, it's valid (not invalid)
       row["Email Valid"] = !hasAnyEmail || hasValidEmail;
 
-      // Update progress
-      const currentProgress = Math.round(((i + 1) / updatedRows.length) * 100);
-      setProgress(currentProgress);
-
-      // Add delay to simulate processing and show loading screen progress
+      // Update progress and add delay at regular intervals
       if (!isPrisonScrub) {
-        // Basic Scrub: Dynamic delay to ensure 8 second minimum loading time
-        await new Promise(resolve => setTimeout(resolve, delayPerRow));
-      } else if ((i + 1) % 5 === 0) {
-        // For Prison Scrub, yield every 5 rows for UI updates
-        await new Promise(resolve => setTimeout(resolve, 0));
+        // Basic Scrub: Update progress every N rows with delay for smooth animation
+        if ((i + 1) % rowsPerStep === 0 || (i + 1) === totalRows) {
+          const currentProgress = Math.round(((i + 1) / totalRows) * 100);
+          setProgress(currentProgress);
+          await new Promise(resolve => setTimeout(resolve, delayPerStep));
+        }
+      } else {
+        // Prison Scrub: Update progress every row, yield periodically
+        const currentProgress = Math.round(((i + 1) / totalRows) * 100);
+        setProgress(currentProgress);
+        if ((i + 1) % 5 === 0) {
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
       }
     }
 
