@@ -157,6 +157,10 @@ function App() {
     // Small delay to ensure loading screen renders
     await new Promise(resolve => setTimeout(resolve, 100));
 
+    // For Basic Scrub, calculate delay to ensure 8 second minimum loading time
+    const targetLoadingTime = 8000; // 8 seconds in milliseconds
+    const delayPerRow = !isPrisonScrub ? Math.max(targetLoadingTime / rows.length, 50) : 0;
+
     const cache: PhoneCache = {};
     const seenAddresses = new Set<string>();
     const updatedRows = [...rows];
@@ -239,9 +243,9 @@ function App() {
       setProgress(currentProgress);
 
       // Add delay to simulate processing and show loading screen progress
-      // For Basic Scrub: ~30ms per row, Prison Scrub: natural API delay
       if (!isPrisonScrub) {
-        await new Promise(resolve => setTimeout(resolve, 30));
+        // Basic Scrub: Dynamic delay to ensure 8 second minimum loading time
+        await new Promise(resolve => setTimeout(resolve, delayPerRow));
       } else if ((i + 1) % 5 === 0) {
         // For Prison Scrub, yield every 5 rows for UI updates
         await new Promise(resolve => setTimeout(resolve, 0));
