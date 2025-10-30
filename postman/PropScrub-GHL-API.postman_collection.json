@@ -458,11 +458,16 @@
         {
           "name": "Get All Opportunities",
           "request": {
-            "method": "GET",
+            "method": "POST",
             "header": [
               {
                 "key": "Authorization",
                 "value": "Bearer {{ghl_private_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
                 "type": "text"
               },
               {
@@ -471,22 +476,16 @@
                 "type": "text"
               }
             ],
-            "url": {
-              "raw": "{{ghl_base_url}}/opportunities/search?locationId={{location_id}}&limit=10",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["opportunities", "search"],
-              "query": [
-                {
-                  "key": "locationId",
-                  "value": "{{location_id}}"
-                },
-                {
-                  "key": "limit",
-                  "value": "10"
-                }
-              ]
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location_id\": \"{{location_id}}\",\n  \"limit\": 10\n}"
             },
-            "description": "Retrieve opportunities from location"
+            "url": {
+              "raw": "{{ghl_base_url}}/opportunities/search",
+              "host": ["{{ghl_base_url}}"],
+              "path": ["opportunities", "search"]
+            },
+            "description": "Retrieve opportunities from location. Note: GHL API v2 requires POST with location_id in body."
           },
           "response": []
         }
