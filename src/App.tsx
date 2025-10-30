@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { LoadingScreen } from './components/LoadingScreen';
-import { FilterSettingsComponent, FilterSettings } from './components/FilterSettings';
+import { FilterSettings } from './components/FilterSettings';
 import { FilterSettingsSection } from './components/FilterSettingsSection';
 import { DataTable } from './components/DataTable';
 import { ExportButton } from './components/ExportButton';
