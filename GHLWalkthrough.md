@@ -174,7 +174,7 @@ Before integration, create these custom fields in GHL:
 #### Get Pipeline IDs Programmatically:
 You'll fetch these via API in the implementation:
 ```
-GET https://services.leadconnectorhq.com/opportunities/pipelines
+GET https://services.leadconnectorhq.com/opportunities/pipelines/{locationId}
 ```
 
 ---
@@ -474,8 +474,9 @@ Authorization: Bearer {API_KEY}
 
 #### 4. Get Pipelines
 ```http
-GET /opportunities/pipelines?locationId={locationId}
-Authorization: Bearer {API_KEY}
+GET /opportunities/pipelines/{locationId}
+Authorization: Bearer {PRIVATE_KEY}
+Version: 2021-07-28
 ```
 
 **Response**:
@@ -753,11 +754,11 @@ export async function addTags(contactId, tags) {
 }
 
 export async function getPipelines(locationId) {
-  return ghlRequest(`/opportunities/pipelines?locationId=${locationId}`);
+  return ghlRequest(`/opportunities/pipelines/${locationId}`);
 }
 
 export async function getCustomFields(locationId) {
-  return ghlRequest(`/custom-fields/?locationId=${locationId}`);
+  return ghlRequest(`/locations/${locationId}/customFields`);
 }
 ```
 

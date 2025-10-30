@@ -407,17 +407,11 @@
               }
             ],
             "url": {
-              "raw": "{{ghl_base_url}}/opportunities/pipelines?locationId={{location_id}}",
+              "raw": "{{ghl_base_url}}/opportunities/pipelines/{{location_id}}",
               "host": ["{{ghl_base_url}}"],
-              "path": ["opportunities", "pipelines"],
-              "query": [
-                {
-                  "key": "locationId",
-                  "value": "{{location_id}}"
-                }
-              ]
+              "path": ["opportunities", "pipelines", "{{location_id}}"]
             },
-            "description": "Get all pipelines and their stages for the location. Use this to find pipeline/stage IDs."
+            "description": "Get all pipelines and their stages for the location. Use this to find pipeline/stage IDs. Note: GHL API v2 uses locationId in the path."
           },
           "response": []
         },
