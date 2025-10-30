@@ -5,6 +5,7 @@ import { FilterSettings } from './components/FilterSettings';
 import { FilterSettingsSection } from './components/FilterSettingsSection';
 import { DataTable } from './components/DataTable';
 import { ExportButton } from './components/ExportButton';
+import { ExportToGHLButton } from './components/ExportToGHLButton';
 import { HeaderMappingModal } from './components/HeaderMappingModal';
 import { MarketSearchModal } from './components/MarketSearchModal';
 import { ExportColumnsModal } from './components/ExportColumnsModal';
@@ -46,6 +47,7 @@ function App() {
   const [userBalance, setUserBalance] = useState<UserBalance>({
     bubbles: 100 // Start with 100 bubbles for testing
   });
+  const [isExportingToGHL, setIsExportingToGHL] = useState(false);
 
   const handleFileSelect = async (file: File) => {
     try {
@@ -327,6 +329,43 @@ function App() {
     }
   };
 
+  const handleExportToGHL = async () => {
+    try {
+      setIsExportingToGHL(true);
+      setError('');
+
+      const response = await fetch('/api/exportToGHL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contacts: filteredData,
+          options: {
+            defaultType: 'Seller',
+            additionalTags: [filterSettings.marketSearch, new Date().toISOString().split('T')[0]].filter(Boolean)
+          }
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Export failed');
+      }
+
+      if (result.success) {
+        alert(`Export complete!\n\nCreated: ${result.results.created}\nUpdated: ${result.results.updated}\nFailed: ${result.results.failed}`);
+      }
+
+    } catch (err) {
+      setError(`Error exporting to GHL: ${err}`);
+      alert(`Export failed: ${err}`);
+    } finally {
+      setIsExportingToGHL(false);
+    }
+  };
+
   const handleCleanAnother = () => {
     // Reset all state to start fresh
     setRawData([]);
@@ -458,6 +497,11 @@ function App() {
                 onExport={handleExport}
                 rowCount={filteredData.length}
               />
+              <ExportToGHLButton
+                onExport={handleExportToGHL}
+                rowCount={filteredData.length}
+                isExporting={isExportingToGHL}
+              />
               <button onClick={handleCleanAnother} className="clean-another-button">
                 <span>Clean New List</span>
               </button>
@@ -476,6 +520,11 @@ function App() {
               <ExportButton
                 onExport={handleExport}
                 rowCount={filteredData.length}
+              />
+              <ExportToGHLButton
+                onExport={handleExportToGHL}
+                rowCount={filteredData.length}
+                isExporting={isExportingToGHL}
               />
               <button onClick={handleCleanAnother} className="clean-another-button">
                 <span>Clean Another List</span>
