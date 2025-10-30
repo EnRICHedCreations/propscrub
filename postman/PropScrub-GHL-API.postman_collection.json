@@ -72,15 +72,9 @@
               }
             ],
             "url": {
-              "raw": "{{ghl_base_url}}/custom-fields/?locationId={{location_id}}",
+              "raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
               "host": ["{{ghl_base_url}}"],
-              "path": ["custom-fields", ""],
-              "query": [
-                {
-                  "key": "locationId",
-                  "value": "{{location_id}}"
-                }
-              ]
+              "path": ["locations", "{{location_id}}", "customFields"]
             },
             "description": "Retrieves all custom fields for the location. Use this to get custom field IDs."
           },
@@ -112,9 +106,9 @@
               "raw": "{\n  \"name\": \"Contact Type\",\n  \"dataType\": \"SINGLE_OPTIONS\",\n  \"position\": 1,\n  \"objectKey\": \"contact.contact_type\",\n  \"parentId\": \"{{location_id}}\",\n  \"locationId\": \"{{location_id}}\",\n  \"options\": [\"Owner\", \"Tenant\", \"Agent\", \"Property Manager\", \"Other\"]\n}"
             },
             "url": {
-              "raw": "{{ghl_base_url}}/custom-fields/",
+              "raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
               "host": ["{{ghl_base_url}}"],
-              "path": ["custom-fields", ""]
+              "path": ["locations", "{{location_id}}", "customFields"]
             },
             "description": "Example: Create a single custom field (Contact Type dropdown)"
           },
@@ -146,9 +140,9 @@
               "raw": "{\n  \"name\": \"Property Address\",\n  \"dataType\": \"TEXT\",\n  \"position\": 2,\n  \"objectKey\": \"contact.property_address\",\n  \"parentId\": \"{{location_id}}\",\n  \"locationId\": \"{{location_id}}\"\n}"
             },
             "url": {
-              "raw": "{{ghl_base_url}}/custom-fields/",
+              "raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
               "host": ["{{ghl_base_url}}"],
-              "path": ["custom-fields", ""]
+              "path": ["locations", "{{location_id}}", "customFields"]
             },
             "description": "Example: Create a text custom field (Property Address)"
           },

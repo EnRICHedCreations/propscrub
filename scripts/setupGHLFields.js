@@ -171,7 +171,7 @@ async function ghlRequest(endpoint, method = 'GET', body = null) {
 
 async function getExistingCustomFields() {
   try {
-    const result = await ghlRequest(`/custom-fields/?locationId=${GHL_LOCATION_ID}`);
+    const result = await ghlRequest(`/locations/${GHL_LOCATION_ID}/customFields`);
     return result.customFields || [];
   } catch (error) {
     console.error('Error fetching existing custom fields:', error.message);
@@ -202,7 +202,7 @@ async function createCustomField(fieldConfig) {
   }
 
   try {
-    const result = await ghlRequest('/custom-fields/', 'POST', payload);
+    const result = await ghlRequest(`/locations/${GHL_LOCATION_ID}/customFields`, 'POST', payload);
     console.log(`✓ Created: ${fieldConfig.name} (ID: ${result.id})`);
     return result;
   } catch (error) {
