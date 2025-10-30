@@ -2,7 +2,7 @@
 // One-time setup script to create all required custom fields in GoHighLevel
 
 const GHL_API_URL = process.env.GHL_API_URL || 'https://services.leadconnectorhq.com';
-const GHL_API_KEY = process.env.GHL_API_KEY;
+const GHL_PRIVATE_KEY = process.env.GHL_PRIVATE_KEY; // Private Integration Key
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
 
 // Define all custom fields needed for PropScrub integration
@@ -159,7 +159,7 @@ async function ghlRequest(endpoint, method = 'GET', body = null) {
   const options = {
     method,
     headers: {
-      'Authorization': `Bearer ${GHL_API_KEY}`,
+      'Authorization': `Bearer ${GHL_PRIVATE_KEY}`,
       'Content-Type': 'application/json',
       'Version': '2021-07-28' // GHL API version
     }
@@ -222,8 +222,10 @@ async function setupCustomFields() {
   console.log('=================================================\n');
 
   // Validate environment variables
-  if (!GHL_API_KEY) {
-    console.error('❌ ERROR: GHL_API_KEY environment variable not set');
+  if (!GHL_PRIVATE_KEY) {
+    console.error('❌ ERROR: GHL_PRIVATE_KEY environment variable not set');
+    console.error('Get your Private Integration Key from:');
+    console.error('GHL → Settings → Private Integrations → Create New Integration');
     process.exit(1);
   }
 

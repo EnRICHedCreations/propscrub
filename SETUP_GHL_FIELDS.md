@@ -8,22 +8,33 @@ Instead of manually creating custom fields through the GHL UI, this script uses 
 
 ## Prerequisites
 
-### 1. Get Your GHL API Key
+### 1. Create Your Private Integration Key
+
+**Important:** PropScrub uses GHL's **Private Integration** (OAuth-based) for secure authentication, not the simple API Key.
 
 **Steps:**
 1. Log into your GoHighLevel account
-2. Go to **Settings** (gear icon)
-3. Navigate to **API Key** or **Integrations → API Key**
-4. Click **Create API Key** (if you don't have one)
-5. Set permissions:
-   - ✓ Contacts (Read & Write)
-   - ✓ Custom Fields (Read & Write)
-6. Copy the API key
+2. **Select the Sub-Account** you want to integrate with (e.g., "Wholesale Softwares")
+3. Go to **Settings → Private Integrations**
+4. Click **Create New Integration**
+5. Fill in the form:
+   - **Name**: "PropScrub Integration"
+   - **Description**: "Lead cleaning and validation tool"
+6. Select **Scopes** (checkboxes):
+   - ✓ `contacts.readonly`
+   - ✓ `contacts.write`
+   - ✓ `opportunities.readonly`
+   - ✓ `opportunities.write`
+   - ✓ `locations/customFields.readonly`
+   - ✓ `locations/customFields.write`
+   - ✓ `locations/tags.readonly`
+   - ✓ `locations/tags.write`
+7. Click **Create**
+8. **Copy the Private Integration Key** (you'll only see this once!)
 
-**Note**: The API key location varies by account type:
-- **Agency Account**: Settings → API Key
-- **Sub-Account**: May need to generate at Agency level first
-- **White-Label**: Check under Company → Integrations
+**Documentation:**
+- Private Integrations Guide: https://marketplace.gohighlevel.com/docs/Authorization/PrivateIntegrationsToken
+- OAuth Getting Started: https://marketplace.gohighlevel.com/docs/oauth/GettingStarted
 
 ### 2. Get Your Location ID
 
@@ -46,14 +57,37 @@ curl -X GET "https://services.leadconnectorhq.com/locations/" \
 
 ### 3. Update Your .env File
 
-Add these two variables to your `.env` file in the project root:
+Add these variables to your `.env` file in the project root:
 
 ```env
-# GHL API Configuration
-GHL_API_KEY=your_api_key_here
+# GHL Private Integration Configuration
+GHL_PRIVATE_KEY=your_private_integration_key_here
 GHL_LOCATION_ID=your_location_id_here
 GHL_API_URL=https://services.leadconnectorhq.com
 ```
+
+**Security Note:** Never commit your `.env` file to git. It should be in `.gitignore`.
+
+## Before Running the Script: Test with Postman
+
+**Highly Recommended:** Test your Private Integration Key in Postman first before running the setup script.
+
+### Why Test First?
+- Verify your credentials work
+- Understand GHL API responses
+- Debug auth issues quickly
+- See exact request/response data
+
+### Quick Postman Setup:
+1. Install Postman: https://www.postman.com/downloads/
+2. Import collection: `postman/PropScrub-GHL-API.postman_collection.json`
+3. Import environment: `postman/PropScrub-GHL.postman_environment.json`
+4. Update environment variables with your Private Integration Key and Location ID
+5. Run "Test Authentication" request
+
+**Full Guide:** See `postman/POSTMAN_SETUP.md` for detailed instructions
+
+---
 
 ## Installation
 
@@ -203,34 +237,36 @@ vercel env add GHL_CUSTOM_FIELD_CONTACT_TYPE
 
 ## Troubleshooting
 
-### Error: "GHL_API_KEY environment variable not set"
+### Error: "GHL_PRIVATE_KEY environment variable not set"
 
 **Solution**: Make sure `.env` file exists and contains:
 ```env
-GHL_API_KEY=your_actual_api_key
+GHL_PRIVATE_KEY=your_actual_private_integration_key
 ```
 
 ### Error: "401 Unauthorized"
 
 **Causes**:
-- Invalid API key
-- API key doesn't have required permissions
-- API key expired
+- Invalid Private Integration Key
+- Key doesn't have required scopes
+- Key was deleted or revoked
 
 **Solution**:
-1. Verify API key is correct (copy-paste again from GHL)
-2. Check permissions in GHL (needs Custom Fields write access)
-3. Generate a new API key if needed
+1. Verify Private Integration Key is correct (copy-paste again from GHL)
+2. Check scopes in GHL (Settings → Private Integrations)
+3. Ensure all required scopes are enabled (see Prerequisites section)
+4. Generate a new Private Integration if needed
 
 ### Error: "403 Forbidden"
 
 **Causes**:
-- API key doesn't have permissions for this location
-- Using sub-account key on wrong location
+- Private Integration Key doesn't have required scopes
+- Key created in different sub-account than target location
 
 **Solution**:
-- Use Agency-level API key for cross-location access
-- Verify `GHL_LOCATION_ID` matches the location your API key has access to
+- Verify you created the Private Integration in the correct sub-account
+- Check `GHL_LOCATION_ID` matches the sub-account where you created the integration
+- Ensure all required scopes are selected (see Prerequisites)
 
 ### Error: "404 Not Found"
 

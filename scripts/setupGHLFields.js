@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const GHL_API_URL = process.env.GHL_API_URL || 'https://services.leadconnectorhq.com';
-const GHL_API_KEY = process.env.GHL_API_KEY;
+const GHL_PRIVATE_KEY = process.env.GHL_PRIVATE_KEY; // Private Integration Key
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
 
 // Define all custom fields needed for PropScrub integration
@@ -166,7 +166,7 @@ async function ghlRequest(endpoint, method = 'GET', body = null) {
   const options = {
     method,
     headers: {
-      'Authorization': `Bearer ${GHL_API_KEY}`,
+      'Authorization': `Bearer ${GHL_PRIVATE_KEY}`,
       'Content-Type': 'application/json',
       'Version': '2021-07-28'
     }
@@ -227,9 +227,11 @@ async function setupCustomFields() {
   console.log('PropScrub GHL Custom Fields Setup');
   console.log('=================================================\n');
 
-  if (!GHL_API_KEY) {
-    console.error('❌ ERROR: GHL_API_KEY environment variable not set');
-    console.error('Add it to your .env file: GHL_API_KEY=your_api_key_here\n');
+  if (!GHL_PRIVATE_KEY) {
+    console.error('❌ ERROR: GHL_PRIVATE_KEY environment variable not set');
+    console.error('Add it to your .env file: GHL_PRIVATE_KEY=your_private_integration_key_here\n');
+    console.error('Get your Private Integration Key from:');
+    console.error('GHL → Settings → Private Integrations → Create New Integration\n');
     process.exit(1);
   }
 

@@ -80,22 +80,38 @@ User in GHL → Opens PropScrub iframe → Uploads CSV → Cleans data
 ### 1. GoHighLevel Access Requirements
 
 #### Required Permissions:
-- [ ] Agency-level access (for white-label configuration)
-- [ ] API access enabled
+- [ ] Sub-account access (or Agency-level for white-label)
+- [ ] Private Integration creation permission
 - [ ] Custom menu item creation permission
 - [ ] Custom fields creation permission
 
 #### API Credentials Needed:
-- [ ] **Agency API Key** (if exporting to multiple sub-accounts)
-  - OR **Location API Key** (if single sub-account)
+- [ ] **Private Integration Key** (OAuth-based authentication)
 - [ ] **Location ID** (target sub-account ID)
 
-#### How to Get API Key:
-1. Log into GHL Agency account
-2. Go to **Settings → API Key**
-3. Click **Create API Key**
-4. Set permissions: Contacts (Read/Write), Opportunities (Read/Write), Custom Fields (Read)
-5. Copy the API key (store securely)
+#### How to Get Private Integration Key:
+1. Log into GoHighLevel
+2. **Select the Sub-Account** you want to integrate with
+3. Go to **Settings → Private Integrations**
+4. Click **Create New Integration**
+5. Fill in:
+   - **Name**: "PropScrub Integration"
+   - **Description**: "Lead cleaning and validation tool"
+6. Select **Required Scopes**:
+   - ✓ `contacts.readonly`
+   - ✓ `contacts.write`
+   - ✓ `opportunities.readonly`
+   - ✓ `opportunities.write`
+   - ✓ `locations/customFields.readonly`
+   - ✓ `locations/customFields.write`
+   - ✓ `locations/tags.readonly`
+   - ✓ `locations/tags.write`
+7. Click **Create**
+8. **Copy the Private Integration Key** (you'll only see this once!)
+
+**Documentation:**
+- Private Integrations: https://marketplace.gohighlevel.com/docs/Authorization/PrivateIntegrationsToken
+- OAuth Guide: https://marketplace.gohighlevel.com/docs/oauth/GettingStarted
 
 #### How to Get Location ID:
 1. Go to target sub-account in GHL
@@ -168,8 +184,8 @@ GET https://services.leadconnectorhq.com/opportunities/pipelines
 Add these to your Vercel project:
 
 ```bash
-# GHL API Configuration
-GHL_API_KEY=your_agency_or_location_api_key_here
+# GHL Private Integration Configuration
+GHL_PRIVATE_KEY=your_private_integration_key_here
 GHL_LOCATION_ID=your_target_location_id_here
 
 # GHL API Base URL
@@ -205,7 +221,7 @@ GHL_EXPORT_COST_PER_100_RECORDS=10
 
 #### How to Add to Vercel:
 ```bash
-vercel env add GHL_API_KEY
+vercel env add GHL_PRIVATE_KEY
 vercel env add GHL_LOCATION_ID
 # ... repeat for all variables
 ```
@@ -214,6 +230,46 @@ Or use Vercel Dashboard:
 1. Go to your project in Vercel
 2. Settings → Environment Variables
 3. Add each variable for Production, Preview, and Development
+
+---
+
+## Part 0: Testing with Postman (Recommended First Step)
+
+Before implementing the integration, test your GHL API access using Postman. This helps verify credentials and understand API behavior.
+
+### Why Start with Postman?
+
+- ✅ Verify Private Integration Key works
+- ✅ Test API endpoints before coding
+- ✅ Understand request/response structure
+- ✅ Debug authentication issues quickly
+- ✅ Explore GHL data (pipelines, custom fields, contacts)
+
+### Quick Postman Setup
+
+1. **Download Postman**: https://www.postman.com/downloads/
+2. **Import Collection**: `postman/PropScrub-GHL-API.postman_collection.json`
+3. **Import Environment**: `postman/PropScrub-GHL.postman_environment.json`
+4. **Configure Variables**:
+   - `ghl_private_key`: Your Private Integration Key
+   - `location_id`: Your Location ID
+5. **Test Authentication**: Run "Test Authentication" request
+
+### Recommended Testing Workflow
+
+1. ✓ Test Authentication (verify credentials)
+2. ✓ List All Custom Fields (see existing fields)
+3. ✓ Get All Pipelines (find pipeline/stage IDs)
+4. ✓ Create Test Contact (verify contact creation works)
+5. ✓ Create Custom Field (test field creation)
+
+**Full Postman Guide**: See `postman/POSTMAN_SETUP.md`
+
+### Learning Resources
+
+- **GHL API Docs**: https://marketplace.gohighlevel.com/docs
+- **Private Integrations Guide**: https://marketplace.gohighlevel.com/docs/Authorization/PrivateIntegrationsToken
+- **OAuth Getting Started**: https://marketplace.gohighlevel.com/docs/oauth/GettingStarted
 
 ---
 
@@ -631,14 +687,15 @@ export default async function handler(req, res) {
 ```javascript
 // api/utils/ghlClient.js
 const GHL_API_URL = process.env.GHL_API_URL || 'https://services.leadconnectorhq.com';
-const GHL_API_KEY = process.env.GHL_API_KEY;
+const GHL_PRIVATE_KEY = process.env.GHL_PRIVATE_KEY;
 
 async function ghlRequest(endpoint, method = 'GET', body = null) {
   const options = {
     method,
     headers: {
-      'Authorization': `Bearer ${GHL_API_KEY}`,
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${GHL_PRIVATE_KEY}`,
+      'Content-Type': 'application/json',
+      'Version': '2021-07-28'
     }
   };
 
