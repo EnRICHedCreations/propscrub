@@ -420,11 +420,17 @@ Authorization: Bearer {API_KEY}
 
 ---
 
-#### 2. Lookup Contact (Duplicate Check)
+#### 2. Search Contacts (Duplicate Check)
 ```http
-GET /contacts/lookup?email={email}&phone={phone}&locationId={locationId}
-Authorization: Bearer {API_KEY}
+GET /contacts/?locationId={locationId}&query={email_or_phone}
+Authorization: Bearer {PRIVATE_KEY}
+Version: 2021-07-28
 ```
+
+**Parameters:**
+- `locationId` - Your location ID (required)
+- `query` - Search term (email, phone, or name)
+- `limit` - Number of results (optional, default 20)
 
 **Response**:
 ```json
@@ -432,9 +438,16 @@ Authorization: Bearer {API_KEY}
   "contacts": [
     {
       "id": "existing_contact_id",
-      "email": "john@example.com"
+      "email": "john@example.com",
+      "phone": "+15555551234",
+      "firstName": "John",
+      "lastName": "Doe"
     }
-  ]
+  ],
+  "meta": {
+    "total": 1,
+    "currentPage": 1
+  }
 }
 ```
 
@@ -609,7 +622,9 @@ export default async function handler(req, res) {
 
           // Check for duplicates (optional)
           if (process.env.GHL_ENABLE_DUPLICATE_CHECK === 'true') {
-            const existing = await lookupContact(ghlContact.email, ghlContact.phone, locationId);
+            // Search by email first, then by phone if no email
+            const searchQuery = ghlContact.email || ghlContact.phone;
+            const existing = await searchContact(searchQuery, locationId);
             if (existing) {
               results.duplicates.push({
                 propScrubData: contact,
@@ -717,14 +732,15 @@ export async function createContact(contactData) {
   return ghlRequest('/contacts/', 'POST', contactData);
 }
 
-export async function lookupContact(email, phone, locationId) {
+export async function searchContact(searchQuery, locationId) {
+  // Search by email or phone using the query parameter
   const params = new URLSearchParams({
     locationId,
-    ...(email && { email }),
-    ...(phone && { phone })
+    query: searchQuery, // Can be email, phone, or name
+    limit: '1' // Only need first result for duplicate check
   });
 
-  const result = await ghlRequest(`/contacts/lookup?${params}`);
+  const result = await ghlRequest(`/contacts/?${params}`);
   return result.contacts?.[0] || null;
 }
 

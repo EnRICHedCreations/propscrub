@@ -273,21 +273,22 @@
               }
             ],
             "url": {
-              "raw": "{{ghl_base_url}}/contacts/lookup?locationId={{location_id}}&email=john.doe@test.com",
+              "raw": "{{ghl_base_url}}/contacts/?locationId={{location_id}}&query=john.doe@test.com",
               "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", "lookup"],
+              "path": ["contacts", ""],
               "query": [
                 {
                   "key": "locationId",
                   "value": "{{location_id}}"
                 },
                 {
-                  "key": "email",
-                  "value": "john.doe@test.com"
+                  "key": "query",
+                  "value": "john.doe@test.com",
+                  "description": "Search by email, phone, or name"
                 }
               ]
             },
-            "description": "Check if contact exists by email (used for duplicate detection). Can also search by phone."
+            "description": "Search for contacts by email, phone, or name (used for duplicate detection). GHL API v2 uses the 'query' parameter to search across multiple fields."
           },
           "response": []
         },
