@@ -1,6 +1,9 @@
 {
   "name": "propscrub-api",
   "version": "1.0.0",
+  "type": "module",
   "description": "Vercel serverless functions for PropScrubber - HLRLookup.com integration",
-  "dependencies": {}
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
 }
