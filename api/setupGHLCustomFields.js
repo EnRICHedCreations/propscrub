@@ -9,49 +9,45 @@ const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
 // Note: GHL uses specific dataType values and requires objectKey + parentId
 const CUSTOM_FIELDS_CONFIG = [
   // Basic Fields
-  {
-    name: 'Contact Type',
-    dataType: 'SINGLE_OPTIONS', // Options will be added manually in GHL UI
-    position: 1
-    // options: ['Owner', 'Tenant', 'Agent', 'Property Manager', 'Other']
-  },
+  // Note: Contact Type uses standard GHL field "type"
+  // Valid values: Seller, Buyer, Wholesaler, Agent, Other
   {
     name: 'Property Address',
     dataType: 'TEXT',
-    position: 2
+    position: 1
   },
   {
     name: 'Phone 2',
     dataType: 'PHONE',
-    position: 3
+    position: 2
   },
   {
     name: 'Phone 3',
     dataType: 'PHONE',
-    position: 4
+    position: 3
   },
   {
     name: 'Email 2',
     dataType: 'TEXT', // GHL API doesn't support EMAIL type
-    position: 5
+    position: 4
   },
   {
     name: 'Email 3',
     dataType: 'TEXT', // GHL API doesn't support EMAIL type
-    position: 6
+    position: 5
   },
 
   // Prison Scrub Fields (Phone 1)
   {
     name: 'Phone Type',
     dataType: 'SINGLE_OPTIONS',
-    position: 7,
+    position: 6,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone Status',
     dataType: 'SINGLE_OPTIONS',
-    position: 8,
+    position: 7,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   },
 
@@ -59,13 +55,13 @@ const CUSTOM_FIELDS_CONFIG = [
   {
     name: 'Phone 2 Type',
     dataType: 'SINGLE_OPTIONS',
-    position: 9,
+    position: 8,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone 2 Status',
     dataType: 'SINGLE_OPTIONS',
-    position: 10,
+    position: 9,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   },
 
@@ -73,13 +69,13 @@ const CUSTOM_FIELDS_CONFIG = [
   {
     name: 'Phone 3 Type',
     dataType: 'SINGLE_OPTIONS',
-    position: 11,
+    position: 10,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone 3 Status',
     dataType: 'SINGLE_OPTIONS',
-    position: 12,
+    position: 11,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   }
 ];
