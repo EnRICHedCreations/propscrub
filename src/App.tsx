@@ -24,6 +24,9 @@ import assignsLogo from './images/Assigns-Logo.png';
 import './App.css';
 
 function App() {
+  // Check if app is running in an iframe (embedded in GHL)
+  const isInIframe = window.self !== window.top;
+
   const [rawData, setRawData] = useState<RawRow[]>([]);
   const [cleanedData, setCleanedData] = useState<CleanedRow[]>([]);
   const [isValidating, setIsValidating] = useState(false);
@@ -497,11 +500,13 @@ function App() {
                 onExport={handleExport}
                 rowCount={filteredData.length}
               />
-              <ExportToGHLButton
-                onExport={handleExportToGHL}
-                rowCount={filteredData.length}
-                isExporting={isExportingToGHL}
-              />
+              {isInIframe && (
+                <ExportToGHLButton
+                  onExport={handleExportToGHL}
+                  rowCount={filteredData.length}
+                  isExporting={isExportingToGHL}
+                />
+              )}
               <button onClick={handleCleanAnother} className="clean-another-button">
                 <span>Clean New List</span>
               </button>
@@ -521,11 +526,13 @@ function App() {
                 onExport={handleExport}
                 rowCount={filteredData.length}
               />
-              <ExportToGHLButton
-                onExport={handleExportToGHL}
-                rowCount={filteredData.length}
-                isExporting={isExportingToGHL}
-              />
+              {isInIframe && (
+                <ExportToGHLButton
+                  onExport={handleExportToGHL}
+                  rowCount={filteredData.length}
+                  isExporting={isExportingToGHL}
+                />
+              )}
               <button onClick={handleCleanAnother} className="clean-another-button">
                 <span>Clean Another List</span>
               </button>
