@@ -1,0 +1,1101 @@
+{
+    "pipelines": [
+        {
+            "stages": [
+                {
+                    "id": "49e2a228-f174-4e1f-bc22-c055f0670ac9",
+                    "name": "SMS Basic Campaign Fire",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "64c03f12-22d5-4049-819a-34d42fddf7d6",
+                    "name": "Email Basic Campaign Fire",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "f5260df8-5c54-4feb-bee7-05fc0b1bbc03",
+                    "name": "Cold Call Basic Campaign Fire",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "0244c80f-424c-4725-9d7c-2552e2ecff1f",
+                    "name": "PPL Basic Campaign Fire",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "515c7c9a-99b4-4997-80d8-332b1f4deb49",
+                    "name": "Agent Army Basic Fire",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "e283f80d-7451-4fae-aa9f-d4b70fbcff8f",
+                    "name": "JV Basic Fire",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "5cc65ba2-c591-4659-965a-5170f1346d33",
+                    "name": "BuyBoxRequest Basic Fire",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b08cd372-9777-45d9-a747-06b8537385b4",
+                    "name": "Dispo Basic Fire",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-20T18:54:48.783Z",
+            "dateUpdated": "2025-08-21T23:56:35.215Z",
+            "name": "KYLE DEV PIPELINE (DELETE LATER)",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "SVYn5Ux6LcnA7PCsKTQT"
+        },
+        {
+            "stages": [
+                {
+                    "id": "c1e1a790-d268-4282-a403-8e79e0916990",
+                    "name": "🙋Prospect",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c7e367a2-a990-4c45-95fb-7e79c13b9679",
+                    "name": "💀 Dead",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "029cb3ff-be4e-4575-a78a-0df4d110a839",
+                    "name": "🆕 Lead",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "a9a59005-5c11-4ed7-a808-70eeccfb9448",
+                    "name": "🤖 CompBot AI",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "a67f5673-0f44-4913-bcf7-6af1895fc36d",
+                    "name": "✅ Passed CompBot",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "9bf49d7b-111d-4edf-9c7e-3e034a2775e5",
+                    "name": "❌ Failed CompBot",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "d09ce338-a152-4c2b-aad4-b0f1d605bef2",
+                    "name": "🧜‍♀️ Auto Follow Up",
+                    "originId": "OWFhYTE1ODQtYmQ0MS00Y2NjLTlkNDktOWMxZDUxMGRmZmRm",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "ad34cfcc-43cd-45aa-a9e6-c3befce9a0e7",
+                    "name": "🔥 Hot Lead",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "4f03c4d9-df28-4852-aaac-d66d54dc4fea",
+                    "name": "🤝 Negotiation",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "468c396e-b292-4b9a-8af0-14ca0f78b5ec",
+                    "name": "📅 Appointment Set",
+                    "originId": "ZGYyNDcxZWUtNjAzOS00N2RiLTk4NzItYWViZGYzOGExOTBm",
+                    "position": 9,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "df2d56b4-90cd-4485-b038-1f332e1d1d77",
+                    "name": "📨 Auto Send Contract ",
+                    "originId": "MTcwNzllZDMtZDJjMi00ODIzLTlkOGUtZDQ4MWMxYmRmM2Zj",
+                    "position": 10,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "fd14fa63-74b5-4e50-8c8f-01d43149d282",
+                    "name": "📩 Contract Sent",
+                    "position": 11,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "3ee63337-ae6d-476c-b904-ec64ef18ef6b",
+                    "name": "📝 Under Contract",
+                    "originId": "OGVjZjZjMDEtZmQ0Yi00MjY2LTkzNTAtNzI2N2IyM2U2N2I4",
+                    "position": 12,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "4470ede8-246b-461b-9375-4ce02f515f66",
+                    "name": "🏴‍☠️ Send to JV Partner (MaxDispo)",
+                    "position": 13,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "146bd81c-f472-4fd1-a7a8-43ff2b1b0c74",
+                    "name": "📣 Marketing Active",
+                    "originId": "NDdjNWYwY2QtZjIwMy00NjFkLWEwNjctZGU2Njg3MTFhOTE4",
+                    "position": 14,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "d61dc04a-dabd-4d55-8133-fdaf05c32fbf",
+                    "name": "💸 Deal Sold",
+                    "originId": "YTU4MzU5MDItNzdmNy00ZDBiLWFjNjItZDExOTFhNjM3ZjQ0",
+                    "position": 15,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "141a1a16-ae80-4549-8848-0c93b034ef6d",
+                    "name": "🏛️ Open Title",
+                    "position": 16,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "23977e2e-dd4f-4fa3-af32-c85cbe8989b0",
+                    "name": "🕵️‍♂️ In Title Process",
+                    "position": 17,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "a0c8f032-e0ce-4211-9a43-adf4d6ee59e0",
+                    "name": "⚠️ Title Issues",
+                    "originId": "NGI0YzMxNWMtMGEwYS00YmQ4LThhYmYtOTM3MWE2OWZkZmY0",
+                    "position": 18,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "26595ff9-af94-43ac-9230-0d5be90e2077",
+                    "name": "🔑 Clear Title",
+                    "position": 19,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "5f024a61-9ea1-4096-a30f-3cfa85356547",
+                    "name": "🔒 Closed",
+                    "position": 20,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-08T21:18:38.761Z",
+            "dateUpdated": "2025-08-15T12:20:22.660Z",
+            "name": "🏠 Acquisitions",
+            "originId": "jt5nTezArNoGyjQ7eq4U",
+            "id": "PXbjg935SKoEyp8bmwYU"
+        },
+        {
+            "stages": [
+                {
+                    "id": "5a2a5f89-0502-4507-b25c-1b87cf1d0c38",
+                    "name": "🆕 Lead",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "619a90b0-ce5d-4317-afb3-881c4812178e",
+                    "name": "💀 Dead",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "05be919d-4e2e-4a90-aed1-9d01ce1ce38c",
+                    "name": "📵 No Answer",
+                    "originId": "ODNkYTcxNDAtMDRmZC00ZThhLWE2OTQtNzJkNjMxNzdmMTk4",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "4bdd9af4-e167-4b1a-9f04-968c6d759fff",
+                    "name": "🔄 Auto Refund ",
+                    "originId": "ZDQxNmE4NDItMGE2MC00YjE1LWFiMmYtNTgyNDUxMTRiMTE0",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "5fdd22a1-5503-4e11-8951-e5b6eb15cb2b",
+                    "name": "🏴‍☠ Follow Up (Captain Mode) ",
+                    "originId": "Y2Y2NGQzNjMtZjNmMC00ZDIwLWFiOGQtOTRmMWU2ZWNlNGZk",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "f7caeeda-4204-45af-9859-f83c077ea2d1",
+                    "name": "✅ Answered",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c08824c9-be76-4c13-a9f7-f671ea85223d",
+                    "name": "🔥 Hot Lead",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-08T21:18:38.490Z",
+            "dateUpdated": "2025-09-04T21:39:35.258Z",
+            "name": "🏴‍☠ PPL / PPC",
+            "originId": "IIkmSjx6CiB0wgs7PObB",
+            "id": "AbwyD9uvwb7Vx2c6R9Hx"
+        },
+        {
+            "stages": [
+                {
+                    "id": "14eb7ca6-ff18-41cb-8e03-8c69f2c9429c",
+                    "name": "🆕 New Buyer Lead",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "277edc0c-d6e0-4139-afc0-c9698bae7387",
+                    "name": "🔥 Hot Buyer Lead",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "32c64282-1386-4dd3-a783-d154cdfab740",
+                    "name": "📅 Scheduled Walkthrough / Showing",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "6b990865-4fcc-4913-b434-f3cdf0e5e4ed",
+                    "name": "👀 Buyer Viewed Property",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b8d7cb12-9407-482f-b5b4-03293e429696",
+                    "name": "🗣️ Verbal Offer",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b0a495b6-3d14-4d43-8392-3b7c6c203c13",
+                    "name": "⏳ Pending ",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "586e0b3b-a2d4-4294-a29d-a244d7e89fa6",
+                    "name": "📨 Send Assignment Agreement",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "f3ca971e-723a-4f20-abe4-800ca69c68d5",
+                    "name": "📩 Sent Assignment Agreement",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "10adb56f-adcc-4b6b-8c64-3da7696742fd",
+                    "name": "💸 Under Contract",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "fc47627c-0c5c-462e-b1a5-8e3ccebeff0a",
+                    "name": "⏰ Option Period",
+                    "position": 9,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "3bc83bc0-2448-4cbc-91f7-08850b56e8e3",
+                    "name": "🤑 Option Period Expired",
+                    "position": 10,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "87c827fa-1d54-439e-bf86-87eb0aa1c631",
+                    "name": "🕵️‍♂️ In Title Process",
+                    "position": 11,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "ec1471fa-4979-43bf-99d1-0b39c1619dbd",
+                    "name": "⚠️ Title Issue",
+                    "position": 12,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "294bc6ef-9cbc-476d-a514-0bb57d06c6a6",
+                    "name": "🔑 Clear Title",
+                    "position": 13,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "ec5363a3-82c2-4f6a-826e-9d20b4ba2b34",
+                    "name": "🔒 Closed",
+                    "position": 14,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-09T18:54:15.278Z",
+            "dateUpdated": "2025-09-04T21:36:49.392Z",
+            "name": "👨‍💼 Buyer Tracker",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "WWT4aFbvE9YWidHxDPQ1"
+        },
+        {
+            "stages": [
+                {
+                    "id": "b0b9b8f8-098c-48c6-a55a-89c6ac7acdf6",
+                    "name": "🛑 On Hold",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1fa82add-2f3b-47a2-9109-529e298e0d5a",
+                    "name": "🦈 Shark Mode",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "ee73303a-56a9-45b7-b91b-2cc9cf614896",
+                    "name": "❌ Not Answered",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "280e4a2f-54e8-4df5-9435-9e07b1ff6e41",
+                    "name": "✅ Answered",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c3b0edb6-0de9-42b2-a98c-f8210abab723",
+                    "name": "💀 Dead",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "6440c19d-9ef7-4432-94bf-681b5d935587",
+                    "name": "🆕 Lead",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "04824dc3-8b2b-42d4-99a0-d9080c05e227",
+                    "name": "🔥 Hot Lead",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-09-04T21:38:31.623Z",
+            "dateUpdated": "2025-09-04T21:38:31.623Z",
+            "name": "💣 Buyer Cannon",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "1p60C0Nhn2zntITwY2hN"
+        },
+        {
+            "stages": [
+                {
+                    "id": "06d750bc-e167-4114-98ad-79f588012457",
+                    "name": "📝 Under Contract",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1929eafa-5ea6-484c-8549-0b147b8ddd5e",
+                    "name": "📢 Preparing Marketing",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "0ccc47db-03b9-4417-b2a2-857e2b54f41b",
+                    "name": "⏳ Pending",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1f7ab7cb-fb66-40d5-b166-961ca7f81ce3",
+                    "name": "🔴 Deal is LIVE (Board / Marketplace)",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "ea5d2bf7-5554-4f5f-82b9-819b9d8c4331",
+                    "name": "⏰ Final Countdown",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "d318967a-16ec-4aa1-9b99-de561870206b",
+                    "name": "📩 Auto-Terminate",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "32e37775-6287-46dd-a8c4-fe345583a21a",
+                    "name": "❌ Terminated",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "29d050f9-6511-4573-b60a-9b2076c07a09",
+                    "name": "💸 Deal Sold",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "a3fbba7a-ce28-4442-8a8d-6e5ebbabeab6",
+                    "name": "⚠️ Title Issues",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "7ee94c08-020b-49ad-b2d6-d65440eb981d",
+                    "name": "🔑 Clear Title",
+                    "position": 9,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "2a3e097b-6673-4bd1-8d69-7f059947ce8b",
+                    "name": "🔄 Buyer Terminated",
+                    "position": 10,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "44032088-5e99-40dc-87dd-9122031ec432",
+                    "name": "💼 Seller Terminated ",
+                    "position": 11,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "65bc6f46-7ef0-476d-9434-a5d2148c4d24",
+                    "name": "🔒 Closed",
+                    "position": 12,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-09T18:51:56.512Z",
+            "dateUpdated": "2025-08-28T18:37:45.265Z",
+            "name": "💰 Dispositions",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "mxrRfKClq0EpKhEWdCx2"
+        },
+        {
+            "stages": [
+                {
+                    "id": "7ef18b9b-060b-4a2a-bc52-97a99393daab",
+                    "name": "💰 Need Refund",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "d011efee-9e9d-453b-8625-57c1e082c539",
+                    "name": "📵 No Contact",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "3ad229fa-f1e7-43cc-8103-f1ca7beaf705",
+                    "name": "🏠 On Market",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "53a95207-b9a3-4207-8fa1-48384bf072be",
+                    "name": "🚫 Not Selling",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "f42f6a70-0700-4f91-a8cc-727ff3cdb481",
+                    "name": "🧍‍♂️ Wrong Person",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c6fa231e-f8c2-4241-ab1c-9469796f4058",
+                    "name": "🏚️ Other Reason",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "47facecb-2a10-4cb6-8c78-9e665e62a004",
+                    "name": "🔄 Refund Initiated",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1dcb5d53-0074-4a95-bfb7-8f8646d406e8",
+                    "name": "❌ Refund Rejected",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "50945307-5fed-4739-a073-3f93372ec01d",
+                    "name": "✅ Refund Accepted ",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-09-04T21:30:44.727Z",
+            "dateUpdated": "2025-09-04T21:30:44.727Z",
+            "name": "💸 PPL Refunds",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "nNu1ytc09yzSs2a571qW"
+        },
+        {
+            "stages": [
+                {
+                    "id": "9e52786d-5cfb-46e8-a8f8-1e750fd4ac37",
+                    "name": "🛑 On Hold",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "733aff0a-58fa-48aa-bd5f-a5a81ea5c76e",
+                    "name": "🧜‍♀️ Mermaid Mode ",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "bae596e2-c123-47f0-8fc9-7a9f6ec503be",
+                    "name": "🦈 Shark Mode",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "9a18c250-92e1-464d-8f02-6e2430dcb453",
+                    "name": "🐙 Kraken Mode",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "f0bfccad-f441-4f2b-a157-71c682fb2e5b",
+                    "name": "❌ Not Answered",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "621d5c1f-6848-4313-a995-076ac9abfb9c",
+                    "name": "✅ Answered",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "690eb086-c708-4ed2-8c05-ffd00b9d0c76",
+                    "name": "💀 Dead",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "8b230ef5-4af7-4a14-882c-ccffd1daeb6d",
+                    "name": "🆕 Lead",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "4574ae47-32e2-49fa-bd87-38b33ce1c682",
+                    "name": "🔥 Hot Lead",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-09T01:00:37.356Z",
+            "dateUpdated": "2025-08-09T18:37:18.384Z",
+            "name": "📞 Call Cannon",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "N5qcHx0rUCk6OAnchdFw"
+        },
+        {
+            "stages": [
+                {
+                    "id": "44ae0a4b-e097-4f4a-ae99-8dd376d96a5e",
+                    "name": "🛑 On Hold",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c27d5b63-1dc0-4526-8b69-6e4e999369a3",
+                    "name": "🦈 Shark Mode",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "fbd9d65f-b894-4625-bc5b-68908ba5a81c",
+                    "name": "❌ Not Answered",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "114adc50-9833-432a-a592-fccf3fe4601c",
+                    "name": "✅ Answered",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1e3129c9-b62c-4182-ba15-43eb65d9a734",
+                    "name": "🆕 Lead",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "8ccc1a98-f732-44f8-a9c4-c9f6891b7d9c",
+                    "name": "🔥 Hot Lead",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-09T18:55:54.248Z",
+            "dateUpdated": "2025-09-04T21:38:50.407Z",
+            "name": "📧 Email Cannon",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "O11D1sZoBz4nWKTTBe4s"
+        },
+        {
+            "stages": [
+                {
+                    "id": "02fea059-c5ad-4bd5-9821-24b9e9093f8f",
+                    "name": "🛑 On Hold",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "3431e9b1-478f-449b-8a9f-d9f3d923bb1d",
+                    "name": "🦈 Shark Mode",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "6e18bc3c-173d-4b3a-b23c-441f7aa83b00",
+                    "name": "❌ Not Answered",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "618c1f11-d1bc-4362-8a91-0597dddefb22",
+                    "name": "✅ Answered",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "a9bce367-eef2-44db-8841-486a11487a5e",
+                    "name": "💀 Dead",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b5e9f5ef-5bbd-45b7-906c-3346d39fabb2",
+                    "name": "🆕 Lead",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "728a683e-64e0-4e36-b288-282a9020a796",
+                    "name": "🔥 Hot Lead",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-09T00:16:14.335Z",
+            "dateUpdated": "2025-09-04T21:39:03.168Z",
+            "name": "📱 Text Cannon",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "0gsXnkZlsFxnwTKECOLl"
+        },
+        {
+            "stages": [
+                {
+                    "id": "7055aa7c-c7e7-4735-8836-e774df3ab6eb",
+                    "name": "🆕 JV Lead",
+                    "originId": "ZDUzZjY4ZmYtYzY1ZC00ZjhkLTlhMzYtMzdmNDcyNzE2Mzgy",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b03d1a39-5191-4bf1-b2ec-9aeee7e1e2c5",
+                    "name": "🤖 CompBot AI",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "e9fcae0d-d2cf-4544-b52e-aed5bfa9e9b4",
+                    "name": "✅ Passed CompBot",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "46c9aa14-0379-4cd0-81d2-a3eeffad3ce5",
+                    "name": "❌ Failed CompBot",
+                    "originId": "Y2JkOTc1YTItZWMyZC00NzcyLTkwMWEtNGZhZDAyZWYxMGY1",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "5ba1f625-9b53-4993-8fe0-0f6b2eb37071",
+                    "name": "☠️ Dead JV Lead",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c8be0b86-9274-4c99-bca8-99cf8a6bd35f",
+                    "name": "🔍 Final Review",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "a18ea0f0-0423-4052-bdb7-cb81372899b1",
+                    "name": "⏳ Awaiting More Info",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "832e1368-a78a-4f63-b960-0b1118472102",
+                    "name": "🤝 Negotiation",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "566f829c-0c24-48e8-9de4-8e45244ae664",
+                    "name": "📨 Send JV Agreement",
+                    "originId": "MWNjOWYyYzctYmJhMy00ZmVjLTk2MmYtMzQ5OTFmMWFmMDkx",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1c280d26-ca8c-4737-85ef-6f02a061e3f2",
+                    "name": "📩 JV Agreement Sent",
+                    "position": 9,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "1ae1fc5d-a81a-4957-97dc-ca2bfec6729d",
+                    "name": "📝 Under JV Contract",
+                    "position": 10,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-08T21:22:30.880Z",
+            "dateUpdated": "2025-08-17T14:30:08.633Z",
+            "name": "🤝 JV's",
+            "originId": "SOhS3msYzEnL2TMkg5N4",
+            "id": "A81RXPYTybRLqojekHFq"
+        },
+        {
+            "stages": [
+                {
+                    "id": "e2fb4292-adfe-4199-a6ef-1fee427cde19",
+                    "name": "📝 Under Contract",
+                    "position": 0,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "62d1ce63-9c77-42ff-ae64-98968c3d2c81",
+                    "name": "🤖 CompBot AI",
+                    "position": 1,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "4354ceb2-1370-4024-9720-a8d8a75905b9",
+                    "name": "✅ Passed CompBot",
+                    "position": 2,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "62a694ff-4553-4996-a046-7b008b0ea5e3",
+                    "name": "❌ Failed CompBot",
+                    "position": 3,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "22b0fea3-51ca-4f55-9774-a2d42d1d9d35",
+                    "name": "📨 Send Additional Novation Documents",
+                    "position": 4,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "dce13fc1-0d3e-4627-bf0f-9a7b3c627d43",
+                    "name": "📩 Additional Documents Received",
+                    "position": 5,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "6bd715d5-39df-4911-8f3d-3083ded23d0a",
+                    "name": "📸 Scheduling Pictures",
+                    "position": 6,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b558a2ff-9632-481a-b9c1-a5627aa0039c",
+                    "name": "📷 Pictures Received",
+                    "position": 7,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "4d84a2d5-c7d8-4bd6-9aed-521b9be0a2b1",
+                    "name": "🔍 Find Local Realtor",
+                    "position": 8,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "528bc277-9c9b-4e13-84b7-0ba9ab0d9914",
+                    "name": "🛑 Pending Listing",
+                    "position": 9,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "79e36174-664c-4306-a9d2-3c21c88aa2c6",
+                    "name": "🏷️ Listed",
+                    "position": 10,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "c0738e4c-c0eb-4105-9806-49b3513535a1",
+                    "name": "⏳ Waiting on Offers",
+                    "position": 11,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "45e35734-c634-4783-9d55-d4d3a6674659",
+                    "name": "📩 Auto-Terminate",
+                    "position": 12,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "875ef2c6-2d18-4fce-9a03-101f262c2ea2",
+                    "name": "❌ Terminated",
+                    "position": 13,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "09170f41-e5a1-420c-aa34-281e099ead56",
+                    "name": "💸 Offer Accepted",
+                    "position": 14,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "73c96444-6782-4c16-887e-6dd4fbddac88",
+                    "name": "📝 Final Novation Documents",
+                    "position": 15,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b7558a3c-86db-4151-8b76-82192ad55a39",
+                    "name": "🏛️ Open Title",
+                    "position": 16,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "baca2c5f-23a1-4e66-9eec-b64861762525",
+                    "name": "⏰ Option Period",
+                    "position": 17,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "3332d4b4-4d1d-43c7-94ca-05cbc989d559",
+                    "name": "🤑 Option Period Expired",
+                    "position": 18,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "70412ced-b42d-4854-b285-98a43ad4823f",
+                    "name": "🕵️‍♂️ In Title Process",
+                    "position": 19,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "2e3c147a-901c-4718-8c73-54774858caf7",
+                    "name": "⚠️ Title Issues",
+                    "position": 20,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "45394c58-8fb4-4a8d-845f-a0687ecfe76c",
+                    "name": "🔑 Clear Title",
+                    "position": 21,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "b1b06660-d511-46df-a1e1-2e919faf81a4",
+                    "name": "🔄 Buyer Terminated",
+                    "position": 22,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "ae0a9322-7a9a-4e05-a466-12eabbc70c9d",
+                    "name": "💼 Seller Terminated ",
+                    "position": 23,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                },
+                {
+                    "id": "6abb527f-8fc2-40a3-bd87-d5284d3f35d3",
+                    "name": "🔒 Closed",
+                    "position": 24,
+                    "showInFunnel": true,
+                    "showInPieChart": true
+                }
+            ],
+            "dateAdded": "2025-08-09T18:56:36.363Z",
+            "dateUpdated": "2025-08-28T18:38:51.266Z",
+            "name": "🪧 Novations",
+            "showInFunnel": true,
+            "showInPieChart": true,
+            "id": "MytdcCLWYCQoJLyKcXL6"
+        }
+    ],
+    "traceId": "ef621ef7-86e9-443e-a84d-d9bfca0fdbf2"
+}

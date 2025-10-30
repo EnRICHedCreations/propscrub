@@ -109,7 +109,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"name\": \"Contact Type\",\n  \"fieldKey\": \"contact.contact_type\",\n  \"dataType\": \"DROPDOWN\",\n  \"position\": 1,\n  \"options\": [\"Owner\", \"Tenant\", \"Agent\", \"Property Manager\", \"Other\"]\n}"
+              "raw": "{\n  \"name\": \"Contact Type\",\n  \"dataType\": \"SINGLE_OPTIONS\",\n  \"position\": 1,\n  \"objectKey\": \"contact.contact_type\",\n  \"parentId\": \"{{location_id}}\",\n  \"locationId\": \"{{location_id}}\",\n  \"options\": [\"Owner\", \"Tenant\", \"Agent\", \"Property Manager\", \"Other\"]\n}"
             },
             "url": {
               "raw": "{{ghl_base_url}}/custom-fields/",
@@ -143,7 +143,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"name\": \"Property Address\",\n  \"fieldKey\": \"contact.property_address\",\n  \"dataType\": \"TEXT\",\n  \"position\": 2\n}"
+              "raw": "{\n  \"name\": \"Property Address\",\n  \"dataType\": \"TEXT\",\n  \"position\": 2,\n  \"objectKey\": \"contact.property_address\",\n  \"parentId\": \"{{location_id}}\",\n  \"locationId\": \"{{location_id}}\"\n}"
             },
             "url": {
               "raw": "{{ghl_base_url}}/custom-fields/",

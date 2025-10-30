@@ -13,78 +13,68 @@ const GHL_PRIVATE_KEY = process.env.GHL_PRIVATE_KEY; // Private Integration Key
 const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
 
 // Define all custom fields needed for PropScrub integration
+// Note: GHL uses specific dataType values and requires objectKey + parentId
 const CUSTOM_FIELDS_CONFIG = [
   // Basic Fields
   {
     name: 'Contact Type',
-    fieldKey: 'contact.contact_type',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS', // Was DROPDOWN
     position: 1,
     options: ['Owner', 'Tenant', 'Agent', 'Property Manager', 'Other']
   },
   {
     name: 'Property Address',
-    fieldKey: 'contact.property_address',
     dataType: 'TEXT',
     position: 2
   },
   {
     name: 'Phone 2',
-    fieldKey: 'contact.phone_2',
     dataType: 'PHONE',
     position: 3
   },
   {
     name: 'Phone 3',
-    fieldKey: 'contact.phone_3',
     dataType: 'PHONE',
     position: 4
   },
   {
     name: 'Email 2',
-    fieldKey: 'contact.email_2',
-    dataType: 'TEXT',
+    dataType: 'EMAIL', // Changed from TEXT to EMAIL
     position: 5
   },
   {
     name: 'Email 3',
-    fieldKey: 'contact.email_3',
-    dataType: 'TEXT',
+    dataType: 'EMAIL',
     position: 6
   },
 
   // Prison Scrub Fields (Phone 1)
   {
     name: 'Phone Type',
-    fieldKey: 'contact.phone_type',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 7,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone Status',
-    fieldKey: 'contact.phone_status',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 8,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   },
   {
     name: 'Phone Carrier',
-    fieldKey: 'contact.phone_carrier',
     dataType: 'TEXT',
     position: 9
   },
   {
     name: 'Phone Ported',
-    fieldKey: 'contact.phone_ported',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 10,
     options: ['Yes', 'No', 'Unknown']
   },
   {
     name: 'Phone Roaming',
-    fieldKey: 'contact.phone_roaming',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 11,
     options: ['Yes', 'No', 'Unknown']
   },
@@ -92,35 +82,30 @@ const CUSTOM_FIELDS_CONFIG = [
   // Prison Scrub Fields (Phone 2)
   {
     name: 'Phone 2 Type',
-    fieldKey: 'contact.phone_2_type',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 12,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone 2 Status',
-    fieldKey: 'contact.phone_2_status',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 13,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   },
   {
     name: 'Phone 2 Carrier',
-    fieldKey: 'contact.phone_2_carrier',
     dataType: 'TEXT',
     position: 14
   },
   {
     name: 'Phone 2 Ported',
-    fieldKey: 'contact.phone_2_ported',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 15,
     options: ['Yes', 'No', 'Unknown']
   },
   {
     name: 'Phone 2 Roaming',
-    fieldKey: 'contact.phone_2_roaming',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 16,
     options: ['Yes', 'No', 'Unknown']
   },
@@ -128,35 +113,30 @@ const CUSTOM_FIELDS_CONFIG = [
   // Prison Scrub Fields (Phone 3)
   {
     name: 'Phone 3 Type',
-    fieldKey: 'contact.phone_3_type',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 17,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone 3 Status',
-    fieldKey: 'contact.phone_3_status',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 18,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   },
   {
     name: 'Phone 3 Carrier',
-    fieldKey: 'contact.phone_3_carrier',
     dataType: 'TEXT',
     position: 19
   },
   {
     name: 'Phone 3 Ported',
-    fieldKey: 'contact.phone_3_ported',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 20,
     options: ['Yes', 'No', 'Unknown']
   },
   {
     name: 'Phone 3 Roaming',
-    fieldKey: 'contact.phone_3_roaming',
-    dataType: 'DROPDOWN',
+    dataType: 'SINGLE_OPTIONS',
     position: 21,
     options: ['Yes', 'No', 'Unknown']
   }
@@ -200,15 +180,24 @@ async function getExistingCustomFields() {
 }
 
 async function createCustomField(fieldConfig) {
+  // Generate a unique objectKey from field name
+  const objectKey = fieldConfig.name
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/g, '');
+
   const payload = {
-    locationId: GHL_LOCATION_ID,
     name: fieldConfig.name,
-    fieldKey: fieldConfig.fieldKey,
     dataType: fieldConfig.dataType,
-    position: fieldConfig.position
+    position: fieldConfig.position,
+    objectKey: `contact.${objectKey}`, // Required by GHL API
+    parentId: GHL_LOCATION_ID, // Required by GHL API
+    locationId: GHL_LOCATION_ID
   };
 
-  if (fieldConfig.dataType === 'DROPDOWN' && fieldConfig.options) {
+  // Add options for dropdown fields (SINGLE_OPTIONS or MULTIPLE_OPTIONS)
+  if ((fieldConfig.dataType === 'SINGLE_OPTIONS' || fieldConfig.dataType === 'MULTIPLE_OPTIONS')
+      && fieldConfig.options) {
     payload.options = fieldConfig.options;
   }
 
