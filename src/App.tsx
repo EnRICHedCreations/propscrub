@@ -20,7 +20,6 @@ import { validateEmail } from './utils/emailValidation';
 import { applyDataFilters } from './utils/dataFiltering';
 import { exportToCSV } from './utils/csvExport';
 import assignsLogo from './images/Assigns-Logo.png';
-import academyLogo from './images/Wholesailors-Academy-V2.webp';
 import './App.css';
 
 function App() {
@@ -74,6 +73,17 @@ function App() {
       setError(`Error processing file: ${err}`);
       console.error(err);
     }
+  };
+
+  const handleClearFile = () => {
+    setRawData([]);
+    setCleanedData([]);
+    setDetectedHeaders([]);
+    setShowMarketSearchModal(false);
+    setShowExportColumnsModal(false);
+    setShowMappingModal(false);
+    setError('');
+    setProgress(0);
   };
 
   const handleMarketSearchContinue = (marketSearch: string) => {
@@ -351,18 +361,6 @@ function App() {
               balance={userBalance}
               onPurchaseClick={() => setShowPurchaseModal(true)}
             />
-            <a
-              href="https://www.skool.com/how-to-wholesale/about?ref=26880ff623564ca0a17ff78586c11984"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="academy-ad"
-            >
-              <img src={academyLogo} alt="Wholesailors Academy" className="academy-logo" />
-              <div className="academy-text">
-                <div className="academy-cta">Join the Wholesailors Academy</div>
-                <div className="academy-price">Just $0.50/day</div>
-              </div>
-            </a>
           </div>
         </div>
       </header>
@@ -387,7 +385,8 @@ function App() {
         <section className="upload-section">
           <FileUpload
             onFileSelect={handleFileSelect}
-            disabled={isValidating || rawData.length > 0}
+            onClearFile={handleClearFile}
+            disabled={isValidating}
           />
         </section>
 
@@ -486,61 +485,6 @@ function App() {
         )}
       </main>
 
-      <footer className="app-footer">
-        <div className="footer-ad-content">
-          <div className="footer-ad-left">
-            <a
-              href="https://www.skool.com/how-to-wholesale/about?ref=26880ff623564ca0a17ff78586c11984"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src={academyLogo} alt="Wholesailors Academy" className="footer-academy-logo" />
-            </a>
-            <div className="footer-ad-text">
-              <h3 className="footer-ad-title">Ready to Master Wholesaling?</h3>
-              <p className="footer-ad-description">
-                Join 1,000+ students learning proven strategies to flip houses to hedge funds,
-                build portfolios, and scale their real estate wholesaling business.
-              </p>
-              <div className="footer-features">
-                <div className="footer-feature">
-                  <span className="feature-icon">✓</span>
-                  <span>Live Weekly Coaching</span>
-                </div>
-                <div className="footer-feature">
-                  <span className="feature-icon">✓</span>
-                  <span>Private Community Access</span>
-                </div>
-                <div className="footer-feature">
-                  <span className="feature-icon">✓</span>
-                  <span>Proven Deal Scripts & Templates</span>
-                </div>
-                <div className="footer-feature">
-                  <span className="feature-icon">✓</span>
-                  <span>Exclusive Buyer Network</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="footer-ad-right">
-            <div className="footer-cta-box">
-              <div className="footer-price-tag">
-                <span className="footer-price-label">START TODAY FOR ONLY</span>
-                <span className="footer-price">$0.50/day</span>
-                <span className="footer-price-subtext">That's just $15/month</span>
-              </div>
-              <a
-                href="https://www.skool.com/how-to-wholesale/about?ref=26880ff623564ca0a17ff78586c11984"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-cta-btn"
-              >
-                Join Wholesailors Academy Now →
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

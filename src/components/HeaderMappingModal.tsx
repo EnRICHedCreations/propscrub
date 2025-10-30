@@ -296,7 +296,7 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content mapping-modal-large">
         <div className="modal-header">
           <h2>Map Export Fields to CSV Columns</h2>
           <button onClick={onCancel} className="close-button">
@@ -304,16 +304,17 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
           </button>
         </div>
 
-        <div className="modal-body">
-          <div className="mapping-info">
-            <p>
-              Your CSV has <strong>{detectedHeaders.length}</strong> columns.
-              Auto-mapped <strong>{autoMapped}</strong> fields.
-            </p>
-            <p className="help-text">
-              For each export field, select which CSV column(s) to use. You can merge multiple columns together (e.g., Street + City + State + Zip → Property Address).
-            </p>
-          </div>
+        <div className="modal-body mapping-modal-body">
+          <div className="mapping-left-panel">
+            <div className="mapping-info">
+              <p>
+                Your CSV has <strong>{detectedHeaders.length}</strong> columns.
+                Auto-mapped <strong>{autoMapped}</strong> fields.
+              </p>
+              <p className="help-text">
+                For each export field, select which CSV column(s) to use. You can merge multiple columns together (e.g., Street + City + State + Zip → Property Address).
+              </p>
+            </div>
 
           <div className="mapping-stats">
             <span className="stat-badge mapped">
@@ -345,6 +346,22 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
               {getUnmappedTargets().join(', ')}
             </div>
           )}
+          </div>
+
+          <div className="mapping-right-panel">
+            <div className="mapping-video-container">
+              <h3>How to Map Your CSV</h3>
+              <iframe
+                width="100%"
+                height="315"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                title="CSV Mapping Tutorial"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
         </div>
 
         <div className="modal-footer">
