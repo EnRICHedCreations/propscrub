@@ -1,528 +1,634 @@
 {
-  "info": {
-    "name": "PropScrub - GHL API Testing",
-    "description": "Postman collection for testing GoHighLevel API endpoints used by PropScrub integration",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "variable": [
-    {
-      "key": "ghl_base_url",
-      "value": "https://services.leadconnectorhq.com",
-      "type": "string"
-    },
-    {
-      "key": "ghl_private_key",
-      "value": "YOUR_PRIVATE_INTEGRATION_KEY_HERE",
-      "type": "string"
-    },
-    {
-      "key": "location_id",
-      "value": "YOUR_LOCATION_ID_HERE",
-      "type": "string"
-    }
-  ],
-  "item": [
-    {
-      "name": "1. Authentication & Setup",
-      "item": [
-        {
-          "name": "Test Authentication",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{ghl_base_url}}/locations/{{location_id}}",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["locations", "{{location_id}}"]
-            },
-            "description": "Test if your Private Integration Key is working. Should return location details."
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "2. Custom Fields",
-      "item": [
-        {
-          "name": "List All Custom Fields",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["locations", "{{location_id}}", "customFields"]
-            },
-            "description": "Retrieves all custom fields for the location. Use this to get custom field IDs."
-          },
-          "response": []
-        },
-        {
-          "name": "Create Custom Field - Contact Type",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Contact Type\",\n  \"dataType\": \"SINGLE_OPTIONS\",\n  \"position\": 1,\n  \"objectKey\": \"contact.contact_type\",\n  \"parentId\": \"{{location_id}}\",\n  \"locationId\": \"{{location_id}}\",\n  \"options\": [\"Owner\", \"Tenant\", \"Agent\", \"Property Manager\", \"Other\"]\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["locations", "{{location_id}}", "customFields"]
-            },
-            "description": "Example: Create a single custom field (Contact Type dropdown)"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Custom Field - Property Address",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Property Address\",\n  \"dataType\": \"TEXT\",\n  \"position\": 2,\n  \"objectKey\": \"contact.property_address\",\n  \"parentId\": \"{{location_id}}\",\n  \"locationId\": \"{{location_id}}\"\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["locations", "{{location_id}}", "customFields"]
-            },
-            "description": "Example: Create a text custom field (Property Address)"
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "3. Contacts",
-      "item": [
-        {
-          "name": "Get All Contacts",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/?locationId={{location_id}}&limit=10",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", ""],
-              "query": [
-                {
-                  "key": "locationId",
-                  "value": "{{location_id}}"
-                },
-                {
-                  "key": "limit",
-                  "value": "10"
-                }
-              ]
-            },
-            "description": "Retrieve contacts from location (paginated)"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Contact (Basic)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@test.com\",\n  \"phone\": \"+15555551234\",\n  \"tags\": [\"test\", \"propscrub\"]\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", ""]
-            },
-            "description": "Create a basic contact with standard fields only"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Contact (With Custom Fields)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@test.com\",\n  \"phone\": \"+15555555678\",\n  \"tags\": [\"wholesale\", \"tampa\"],\n  \"customFields\": [\n    {\n      \"id\": \"REPLACE_WITH_CONTACT_TYPE_FIELD_ID\",\n      \"value\": \"Owner\"\n    },\n    {\n      \"id\": \"REPLACE_WITH_PROPERTY_ADDRESS_FIELD_ID\",\n      \"value\": \"123 Main St, Tampa, FL 33601\"\n    }\n  ]\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", ""]
-            },
-            "description": "Create contact with custom fields populated. Replace field IDs with actual IDs from 'List All Custom Fields' request."
-          },
-          "response": []
-        },
-        {
-          "name": "Lookup Contact (Duplicate Check)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/?locationId={{location_id}}&query=john.doe@test.com",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", ""],
-              "query": [
-                {
-                  "key": "locationId",
-                  "value": "{{location_id}}"
-                },
-                {
-                  "key": "query",
-                  "value": "john.doe@test.com",
-                  "description": "Search by email, phone, or name"
-                }
-              ]
-            },
-            "description": "Search for contacts by email, phone, or name (used for duplicate detection). GHL API v2 uses the 'query' parameter to search across multiple fields."
-          },
-          "response": []
-        },
-        {
-          "name": "Get Contact by ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/CONTACT_ID_HERE",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", "CONTACT_ID_HERE"]
-            },
-            "description": "Retrieve a specific contact by ID. Replace CONTACT_ID_HERE with actual contact ID."
-          },
-          "response": []
-        },
-        {
-          "name": "Update Contact",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe Updated\",\n  \"email\": \"john.doe.updated@test.com\"\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/CONTACT_ID_HERE",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", "CONTACT_ID_HERE"]
-            },
-            "description": "Update existing contact. Replace CONTACT_ID_HERE with actual contact ID."
-          },
-          "response": []
-        },
-        {
-          "name": "Add Tags to Contact",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"tags\": [\"propscrub\", \"wholesale\", \"tampa-market\"]\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/CONTACT_ID_HERE/tags",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", "CONTACT_ID_HERE", "tags"]
-            },
-            "description": "Add tags to existing contact. Replace CONTACT_ID_HERE with actual contact ID."
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "4. Opportunities (Pipelines)",
-      "item": [
-        {
-          "name": "Get All Pipelines",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{ghl_base_url}}/opportunities/pipelines/{{location_id}}",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["opportunities", "pipelines", "{{location_id}}"]
-            },
-            "description": "Get all pipelines and their stages for the location. Use this to find pipeline/stage IDs. Note: GHL API v2 uses locationId in the path."
-          },
-          "response": []
-        },
-        {
-          "name": "Create Opportunity",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"name\": \"123 Main St - Wholesale Deal\",\n  \"pipelineId\": \"REPLACE_WITH_PIPELINE_ID\",\n  \"pipelineStageId\": \"REPLACE_WITH_STAGE_ID\",\n  \"status\": \"open\",\n  \"contactId\": \"REPLACE_WITH_CONTACT_ID\",\n  \"monetaryValue\": 50000\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/opportunities/",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["opportunities", ""]
-            },
-            "description": "Create an opportunity linked to a contact. Get pipeline/stage IDs from 'Get All Pipelines' request."
-          },
-          "response": []
-        },
-        {
-          "name": "Get All Opportunities",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"location_id\": \"{{location_id}}\",\n  \"limit\": 10\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/opportunities/search",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["opportunities", "search"]
-            },
-            "description": "Retrieve opportunities from location. Note: GHL API v2 requires POST with location_id in body."
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "5. Testing PropScrub Export",
-      "item": [
-        {
-          "name": "Full Export Simulation",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{ghl_private_key}}",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Version",
-                "value": "2021-07-28",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"PropScrub\",\n  \"email\": \"test.propscrub@example.com\",\n  \"phone\": \"+15555559999\",\n  \"tags\": [\"propscrub-test\", \"tampa\"],\n  \"customFields\": [\n    {\n      \"id\": \"CONTACT_TYPE_FIELD_ID\",\n      \"value\": \"Owner\"\n    },\n    {\n      \"id\": \"PROPERTY_ADDRESS_FIELD_ID\",\n      \"value\": \"456 Test Ave, Tampa, FL 33602\"\n    },\n    {\n      \"id\": \"PHONE_2_FIELD_ID\",\n      \"value\": \"+15555558888\"\n    },\n    {\n      \"id\": \"EMAIL_2_FIELD_ID\",\n      \"value\": \"test.secondary@example.com\"\n    }\n  ]\n}"
-            },
-            "url": {
-              "raw": "{{ghl_base_url}}/contacts/",
-              "host": ["{{ghl_base_url}}"],
-              "path": ["contacts", ""]
-            },
-            "description": "Simulates a full PropScrub export with all fields. Replace field IDs with actual custom field IDs."
-          },
-          "response": []
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "4ffd4f20-cf24-4416-8d6e-1a8eef62ca25",
+		"name": "PropScrub - GHL API Testing",
+		"description": "Postman collection for testing GoHighLevel API endpoints used by PropScrub integration",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49686850",
+		"_collection_link": "https://enrichedcreations96-5882171.postman.co/workspace/Richard-Decker's-Workspace~35e7ceb5-37fa-48f5-837e-0d1613543a5b/collection/49686850-4ffd4f20-cf24-4416-8d6e-1a8eef62ca25?action=share&source=collection_link&creator=49686850"
+	},
+	"item": [
+		{
+			"name": "1. Authentication & Setup",
+			"item": [
+				{
+					"name": "Test Authentication",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ghl_base_url}}/locations/{{location_id}}",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"locations",
+								"{{location_id}}"
+							]
+						},
+						"description": "Test if your Private Integration Key is working. Should return location details."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Custom Fields",
+			"item": [
+				{
+					"name": "List All Custom Fields",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"locations",
+								"{{location_id}}",
+								"customFields"
+							]
+						},
+						"description": "Retrieves all custom fields for the location. Use this to get custom field IDs."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Custom Field - Contact Type",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Contact Type\",\n  \"dataType\": \"SINGLE_OPTIONS\",\n  \"position\": 1,\n  \"options\": [\"Owner\", \"Tenant\", \"Agent\", \"Property Manager\", \"Other\"]\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"locations",
+								"{{location_id}}",
+								"customFields"
+							]
+						},
+						"description": "Example: Create a single custom field (Contact Type dropdown)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Custom Field - Property Address",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Property Address\",\n  \"dataType\": \"TEXT\",\n  \"position\": 2\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/locations/{{location_id}}/customFields",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"locations",
+								"{{location_id}}",
+								"customFields"
+							]
+						},
+						"description": "Example: Create a text custom field (Property Address)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Contacts",
+			"item": [
+				{
+					"name": "Get All Contacts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/?locationId={{location_id}}&limit=10",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								""
+							],
+							"query": [
+								{
+									"key": "locationId",
+									"value": "{{location_id}}"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve contacts from location (paginated)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contact (Basic)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@test.com\",\n  \"phone\": \"+15555551234\",\n  \"tags\": [\"test\", \"propscrub\"]\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								""
+							]
+						},
+						"description": "Create a basic contact with standard fields only"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Contact (With Custom Fields)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@test.com\",\n  \"phone\": \"+15555555678\",\n  \"tags\": [\"wholesale\", \"tampa\"],\n  \"customFields\": [\n    {\n      \"id\": \"REPLACE_WITH_CONTACT_TYPE_FIELD_ID\",\n      \"value\": \"Owner\"\n    },\n    {\n      \"id\": \"REPLACE_WITH_PROPERTY_ADDRESS_FIELD_ID\",\n      \"value\": \"123 Main St, Tampa, FL 33601\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								""
+							]
+						},
+						"description": "Create contact with custom fields populated. Replace field IDs with actual IDs from 'List All Custom Fields' request."
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup Contact (Duplicate Check)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/?locationId={{location_id}}&query=john.doe@test.com",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								""
+							],
+							"query": [
+								{
+									"key": "locationId",
+									"value": "{{location_id}}"
+								},
+								{
+									"key": "query",
+									"value": "john.doe@test.com",
+									"description": "Search by email, phone, or name"
+								}
+							]
+						},
+						"description": "Search for contacts by email, phone, or name (used for duplicate detection). GHL API v2 uses the 'query' parameter to search across multiple fields."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/CONTACT_ID_HERE",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								"CONTACT_ID_HERE"
+							]
+						},
+						"description": "Retrieve a specific contact by ID. Replace CONTACT_ID_HERE with actual contact ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe Updated\",\n  \"email\": \"john.doe.updated@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/CONTACT_ID_HERE",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								"CONTACT_ID_HERE"
+							]
+						},
+						"description": "Update existing contact. Replace CONTACT_ID_HERE with actual contact ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Tags to Contact",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tags\": [\"propscrub\", \"wholesale\", \"tampa-market\"]\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/CONTACT_ID_HERE/tags",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								"CONTACT_ID_HERE",
+								"tags"
+							]
+						},
+						"description": "Add tags to existing contact. Replace CONTACT_ID_HERE with actual contact ID."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Opportunities (Pipelines)",
+			"item": [
+				{
+					"name": "Get All Pipelines",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{ghl_base_url}}/opportunities/pipelines?locationId={{location_id}}",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"opportunities",
+								"pipelines"
+							],
+							"query": [
+								{
+									"key": "locationId",
+									"value": "{{location_id}}"
+								}
+							]
+						},
+						"description": "Get all pipelines and their stages for the location. Use this to find pipeline/stage IDs. Note: GHL API v2 uses locationId as a query parameter."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Opportunity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"name\": \"123 Main St - Wholesale Deal\",\n  \"pipelineId\": \"REPLACE_WITH_PIPELINE_ID\",\n  \"pipelineStageId\": \"REPLACE_WITH_STAGE_ID\",\n  \"status\": \"open\",\n  \"contactId\": \"REPLACE_WITH_CONTACT_ID\",\n  \"monetaryValue\": 50000\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/opportunities/",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"opportunities",
+								""
+							]
+						},
+						"description": "Create an opportunity linked to a contact. Get pipeline/stage IDs from 'Get All Pipelines' request."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Opportunities",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"location_id\": \"5sLuFTeElBBpk6eVuqkW\",\n  \"limit\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/opportunities/search?location_id={{location_id}}&limit=10",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"opportunities",
+								"search"
+							],
+							"query": [
+								{
+									"key": "location_id",
+									"value": "{{location_id}}"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve opportunities from location. Note: GHL API v2 requires POST with location_id in body."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Testing PropScrub Export",
+			"item": [
+				{
+					"name": "Full Export Simulation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ghl_private_key}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Version",
+								"value": "2021-07-28",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"locationId\": \"{{location_id}}\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"PropScrub\",\n  \"email\": \"test.propscrub@example.com\",\n  \"phone\": \"+15555559999\",\n  \"tags\": [\"propscrub-test\", \"tampa\"],\n  \"customFields\": [\n    {\n      \"id\": \"CONTACT_TYPE_FIELD_ID\",\n      \"value\": \"Owner\"\n    },\n    {\n      \"id\": \"PROPERTY_ADDRESS_FIELD_ID\",\n      \"value\": \"456 Test Ave, Tampa, FL 33602\"\n    },\n    {\n      \"id\": \"PHONE_2_FIELD_ID\",\n      \"value\": \"+15555558888\"\n    },\n    {\n      \"id\": \"EMAIL_2_FIELD_ID\",\n      \"value\": \"test.secondary@example.com\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{ghl_base_url}}/contacts/",
+							"host": [
+								"{{ghl_base_url}}"
+							],
+							"path": [
+								"contacts",
+								""
+							]
+						},
+						"description": "Simulates a full PropScrub export with all fields. Replace field IDs with actual custom field IDs."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "ghl_base_url",
+			"value": "https://services.leadconnectorhq.com",
+			"type": "string"
+		},
+		{
+			"key": "ghl_private_key",
+			"value": "YOUR_PRIVATE_INTEGRATION_KEY_HERE",
+			"type": "string"
+		},
+		{
+			"key": "location_id",
+			"value": "YOUR_LOCATION_ID_HERE",
+			"type": "string"
+		}
+	]
 }

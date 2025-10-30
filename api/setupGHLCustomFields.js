@@ -11,9 +11,9 @@ const CUSTOM_FIELDS_CONFIG = [
   // Basic Fields
   {
     name: 'Contact Type',
-    dataType: 'SINGLE_OPTIONS',
-    position: 1,
-    options: ['Owner', 'Tenant', 'Agent', 'Property Manager', 'Other']
+    dataType: 'SINGLE_OPTIONS', // Options will be added manually in GHL UI
+    position: 1
+    // options: ['Owner', 'Tenant', 'Agent', 'Property Manager', 'Other']
   },
   {
     name: 'Property Address',
@@ -32,12 +32,12 @@ const CUSTOM_FIELDS_CONFIG = [
   },
   {
     name: 'Email 2',
-    dataType: 'EMAIL',
+    dataType: 'TEXT', // GHL API doesn't support EMAIL type
     position: 5
   },
   {
     name: 'Email 3',
-    dataType: 'EMAIL',
+    dataType: 'TEXT', // GHL API doesn't support EMAIL type
     position: 6
   },
 
@@ -54,84 +54,33 @@ const CUSTOM_FIELDS_CONFIG = [
     position: 8,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
   },
-  {
-    name: 'Phone Carrier',
-    dataType: 'TEXT',
-    position: 9
-  },
-  {
-    name: 'Phone Ported',
-    dataType: 'SINGLE_OPTIONS',
-    position: 10,
-    options: ['Yes', 'No', 'Unknown']
-  },
-  {
-    name: 'Phone Roaming',
-    dataType: 'SINGLE_OPTIONS',
-    position: 11,
-    options: ['Yes', 'No', 'Unknown']
-  },
 
   // Prison Scrub Fields (Phone 2)
   {
     name: 'Phone 2 Type',
     dataType: 'SINGLE_OPTIONS',
-    position: 12,
+    position: 9,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone 2 Status',
     dataType: 'SINGLE_OPTIONS',
-    position: 13,
+    position: 10,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
-  },
-  {
-    name: 'Phone 2 Carrier',
-    dataType: 'TEXT',
-    position: 14
-  },
-  {
-    name: 'Phone 2 Ported',
-    dataType: 'SINGLE_OPTIONS',
-    position: 15,
-    options: ['Yes', 'No', 'Unknown']
-  },
-  {
-    name: 'Phone 2 Roaming',
-    dataType: 'SINGLE_OPTIONS',
-    position: 16,
-    options: ['Yes', 'No', 'Unknown']
   },
 
   // Prison Scrub Fields (Phone 3)
   {
     name: 'Phone 3 Type',
     dataType: 'SINGLE_OPTIONS',
-    position: 17,
+    position: 11,
     options: ['Mobile', 'Landline', 'VoIP', 'Unknown']
   },
   {
     name: 'Phone 3 Status',
     dataType: 'SINGLE_OPTIONS',
-    position: 18,
+    position: 12,
     options: ['LIVE', 'NOT_LIVE', 'Unknown']
-  },
-  {
-    name: 'Phone 3 Carrier',
-    dataType: 'TEXT',
-    position: 19
-  },
-  {
-    name: 'Phone 3 Ported',
-    dataType: 'SINGLE_OPTIONS',
-    position: 20,
-    options: ['Yes', 'No', 'Unknown']
-  },
-  {
-    name: 'Phone 3 Roaming',
-    dataType: 'SINGLE_OPTIONS',
-    position: 21,
-    options: ['Yes', 'No', 'Unknown']
   }
 ];
 
@@ -173,8 +122,8 @@ async function getExistingCustomFields() {
 }
 
 async function createCustomField(fieldConfig) {
-  // Generate a unique objectKey from field name
-  const objectKey = fieldConfig.name
+  // Generate a unique fieldKey from field name
+  const fieldKey = fieldConfig.name
     .toLowerCase()
     .replace(/\s+/g, '_')
     .replace(/[^a-z0-9_]/g, '');
@@ -182,13 +131,11 @@ async function createCustomField(fieldConfig) {
   const payload = {
     name: fieldConfig.name,
     dataType: fieldConfig.dataType,
-    position: fieldConfig.position,
-    objectKey: `contact.${objectKey}`, // Required by GHL API
-    parentId: GHL_LOCATION_ID, // Required by GHL API
-    locationId: GHL_LOCATION_ID
+    position: fieldConfig.position
   };
 
   // Add options for dropdown fields (SINGLE_OPTIONS or MULTIPLE_OPTIONS)
+  // Note: API uses "options" in CREATE request but "picklistOptions" in GET response
   if ((fieldConfig.dataType === 'SINGLE_OPTIONS' || fieldConfig.dataType === 'MULTIPLE_OPTIONS')
       && fieldConfig.options) {
     payload.options = fieldConfig.options;

@@ -4,7 +4,10 @@
       "Bash(npm install:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebSearch",
+      "WebFetch(domain:marketplace.gohighlevel.com)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
