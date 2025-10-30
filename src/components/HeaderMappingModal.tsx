@@ -19,20 +19,20 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
 }) => {
   // Generate dynamic target headers based on phone/email counts
   const TARGET_HEADERS = useMemo(() => {
-    const headers: string[] = ["First Name", "Last Name", "Contact Type"];
+    const headers: string[] = ["First Name", "Last Name"];
 
     // Add phone columns
     for (let i = 1; i <= numberOfPhones; i++) {
-      headers.push(`Phone ${i}`);
+      headers.push(numberOfPhones === 1 ? "Phone" : `Phone ${i}`);
     }
 
     // Add email columns
     for (let i = 1; i <= numberOfEmails; i++) {
-      headers.push(`Email ${i}`);
+      headers.push(numberOfEmails === 1 ? "Email" : `Email ${i}`);
     }
 
     // Add remaining fields
-    headers.push("Property Address", "Opportunity Name", "Stage", "Pipeline", "Tags");
+    headers.push("Property Address", "Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
 
     return headers;
   }, [numberOfPhones, numberOfEmails]);
@@ -52,8 +52,8 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
 
     // Try to auto-map each target header
     TARGET_HEADERS.forEach(targetHeader => {
-      // Special handling for Phone 1, Phone 2, etc.
-      if (targetHeader.startsWith('Phone ')) {
+      // Special handling for Phone, Phone 1, Phone 2, etc.
+      if (targetHeader === 'Phone' || targetHeader.startsWith('Phone ')) {
         const phoneCols = detectedHeaders.filter(h => {
           const lowerHeader = h.toLowerCase().trim();
           return !usedColumns.has(h) && (
@@ -73,8 +73,8 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
         return;
       }
 
-      // Special handling for Email 1, Email 2, etc.
-      if (targetHeader.startsWith('Email ')) {
+      // Special handling for Email, Email 1, Email 2, etc.
+      if (targetHeader === 'Email' || targetHeader.startsWith('Email ')) {
         const emailCols = detectedHeaders.filter(h => {
           const lowerHeader = h.toLowerCase().trim();
           return !usedColumns.has(h) && (

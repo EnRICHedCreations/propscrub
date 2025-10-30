@@ -34,27 +34,28 @@ export const DataTable: React.FC<DataTableProps> = ({ data, numberOfPhones, numb
 
   // Generate column headers matching export format
   const columns = useMemo(() => {
-    const cols: string[] = ["Status", "First Name", "Last Name", "Contact Type"];
+    const cols: string[] = ["Status", "First Name", "Last Name"];
 
     // Add phone columns with HLR data for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
-      cols.push(`Phone ${i}`);
+      const phoneLabel = numberOfPhones === 1 ? "Phone" : `Phone ${i}`;
+      cols.push(phoneLabel);
       if (isPrisonScrub) {
-        cols.push(`Phone ${i} Status`);
-        cols.push(`Phone ${i} Type`);
-        cols.push(`Phone ${i} Carrier`);
-        cols.push(`Phone ${i} Ported`);
-        cols.push(`Phone ${i} Roaming`);
+        cols.push(`${phoneLabel} Status`);
+        cols.push(`${phoneLabel} Type`);
+        cols.push(`${phoneLabel} Carrier`);
+        cols.push(`${phoneLabel} Ported`);
+        cols.push(`${phoneLabel} Roaming`);
       }
     }
 
     // Add email columns
     for (let i = 1; i <= numberOfEmails; i++) {
-      cols.push(`Email ${i}`);
+      cols.push(numberOfEmails === 1 ? "Email" : `Email ${i}`);
     }
 
     // Add remaining columns
-    cols.push("Property Address", "Opportunity Name", "Stage", "Pipeline", "Tags");
+    cols.push("Property Address", "Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
 
     return cols;
   }, [numberOfPhones, numberOfEmails, isPrisonScrub]);

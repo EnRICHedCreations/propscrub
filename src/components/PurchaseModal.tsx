@@ -20,10 +20,7 @@ export const PurchaseModal = ({ onClose, onPurchase }: PurchaseModalProps) => {
         <div className="modal-body">
           <div className="purchase-info">
             <p className="purchase-description">
-              PropScrub uses a currency system to process your lists. Each scrub costs <strong>5 Bubbles 💧</strong>.
-            </p>
-            <p className="purchase-note">
-              <strong>Note:</strong> 1 Bar of Soap 🧼 = 100 Bubbles 💧
+              PropScrub uses Bubbles 💧 to process your lists. Basic Scrub costs <strong>10 Bubbles per 50 records</strong>.
             </p>
             <p className="dev-mode-notice">
               🚧 <strong>Development Mode:</strong> No real charges will be made. This is for testing purposes only.
@@ -39,19 +36,10 @@ export const PurchaseModal = ({ onClose, onPurchase }: PurchaseModalProps) => {
                 {option.popular && <div className="popular-badge">Most Popular</div>}
                 <div className="option-header">
                   <h3>{option.name}</h3>
-                  {option.bubbles && <span className="option-icon">💧</span>}
-                  {option.barsOfSoap && <span className="option-icon">🧼</span>}
+                  <span className="option-icon">💧</span>
                 </div>
                 <div className="option-details">
-                  {option.bubbles && (
-                    <p className="option-amount">{option.bubbles} Bubbles</p>
-                  )}
-                  {option.barsOfSoap && (
-                    <>
-                      <p className="option-amount">{option.barsOfSoap} Bar{option.barsOfSoap > 1 ? 's' : ''} of Soap</p>
-                      <p className="option-equivalent">({option.barsOfSoap * 100} Bubbles)</p>
-                    </>
-                  )}
+                  <p className="option-amount">{option.bubbles} Bubbles</p>
                 </div>
                 <div className="option-footer">
                   <div className="option-price">${option.priceUSD.toFixed(2)}</div>

@@ -6,6 +6,8 @@ import { FilterSettingsSection } from './components/FilterSettingsSection';
 import { DataTable } from './components/DataTable';
 import { ExportButton } from './components/ExportButton';
 import { HeaderMappingModal } from './components/HeaderMappingModal';
+import { MarketSearchModal } from './components/MarketSearchModal';
+import { ExportColumnsModal } from './components/ExportColumnsModal';
 import { BalanceDisplay } from './components/BalanceDisplay';
 import { PurchaseModal } from './components/PurchaseModal';
 import { VersionToggle, ScrubVersion } from './components/VersionToggle';
@@ -27,11 +29,12 @@ function App() {
   const [isValidating, setIsValidating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string>('');
-  const [fileLoaded, setFileLoaded] = useState(false);
   const [showMappingModal, setShowMappingModal] = useState(false);
+  const [showMarketSearchModal, setShowMarketSearchModal] = useState(false);
+  const [showExportColumnsModal, setShowExportColumnsModal] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [detectedHeaders, setDetectedHeaders] = useState<string[]>([]);
-  const [scrubVersion, setScrubVersion] = useState<ScrubVersion>('prison');
+  const [scrubVersion, setScrubVersion] = useState<ScrubVersion>('basic');
   const [filterSettings, setFilterSettings] = useState<FilterSettings>({
     removeDuplicates: true,
     removeMissingPhone: true,
@@ -42,8 +45,7 @@ function App() {
     marketSearch: ''
   });
   const [userBalance, setUserBalance] = useState<UserBalance>({
-    bubbles: 100, // Start with 100 bubbles for testing
-    barsOfSoap: 1 // Start with 1 bar of soap for testing
+    bubbles: 100 // Start with 100 bubbles for testing
   });
 
   const handleFileSelect = async (file: File) => {
@@ -66,16 +68,43 @@ function App() {
       const headers = Object.keys(parsedData[0]);
       setDetectedHeaders(headers);
 
-      // Show filter settings section
-      setFileLoaded(true);
+      // Show market search modal after file import
+      setShowMarketSearchModal(true);
     } catch (err) {
       setError(`Error processing file: ${err}`);
       console.error(err);
     }
   };
 
-  const handleMapList = () => {
+  const handleMarketSearchContinue = (marketSearch: string) => {
+    setFilterSettings({
+      ...filterSettings,
+      marketSearch
+    });
+    setShowMarketSearchModal(false);
+    setShowExportColumnsModal(true);
+  };
+
+  const handleMarketSearchCancel = () => {
+    setShowMarketSearchModal(false);
+    // Reset file loading state
+    setRawData([]);
+    setDetectedHeaders([]);
+  };
+
+  const handleExportColumnsMapCSV = (numberOfPhones: number, numberOfEmails: number) => {
+    setFilterSettings({
+      ...filterSettings,
+      numberOfPhones,
+      numberOfEmails
+    });
+    setShowExportColumnsModal(false);
     setShowMappingModal(true);
+  };
+
+  const handleExportColumnsCancel = () => {
+    setShowExportColumnsModal(false);
+    setShowMarketSearchModal(true);
   };
 
   const handleMappingConfirm = async (customMapping: Record<string, string | string[]>) => {
@@ -95,20 +124,20 @@ function App() {
 
     try {
       // Generate target headers based on filter settings
-      const targetHeaders: string[] = ["First Name", "Last Name", "Contact Type"];
+      const targetHeaders: string[] = ["First Name", "Last Name"];
 
       // Add phone columns
       for (let i = 1; i <= filterSettings.numberOfPhones; i++) {
-        targetHeaders.push(`Phone ${i}`);
+        targetHeaders.push(filterSettings.numberOfPhones === 1 ? "Phone" : `Phone ${i}`);
       }
 
       // Add email columns
       for (let i = 1; i <= filterSettings.numberOfEmails; i++) {
-        targetHeaders.push(`Email ${i}`);
+        targetHeaders.push(filterSettings.numberOfEmails === 1 ? "Email" : `Email ${i}`);
       }
 
       // Add remaining fields
-      targetHeaders.push("Property Address", "Opportunity Name", "Stage", "Pipeline", "Tags");
+      targetHeaders.push("Property Address", "Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
 
       // Normalize using custom mapping with dynamic headers
       const normalizedData = rawData.map(row =>
@@ -131,23 +160,20 @@ function App() {
     // In development mode, simulate successful purchase
     console.log('DEV MODE: Simulating purchase of', option.name);
 
-    const newBalance = { ...userBalance };
-    if (option.bubbles) {
-      newBalance.bubbles += option.bubbles;
-    }
-    if (option.barsOfSoap) {
-      newBalance.barsOfSoap += option.barsOfSoap;
-    }
+    const newBalance = {
+      bubbles: userBalance.bubbles + option.bubbles
+    };
 
     setUserBalance(newBalance);
     setShowPurchaseModal(false);
 
     // Show success message
-    alert(`✅ Purchase Successful! (DEV MODE)\n\nYou received:\n${option.bubbles ? option.bubbles + ' Bubbles 💧' : ''}\n${option.barsOfSoap ? option.barsOfSoap + ' Bar(s) of Soap 🧼' : ''}`);
+    alert(`✅ Purchase Successful! (DEV MODE)\n\nYou received: ${option.bubbles} Bubbles 💧`);
   };
 
   const handleMappingCancel = () => {
     setShowMappingModal(false);
+    setShowExportColumnsModal(true);
   };
 
   const validateAllPhones = async (rows: CleanedRow[], numberOfPhones: number, numberOfEmails: number, isPrisonScrub: boolean) => {
@@ -187,7 +213,7 @@ function App() {
       let anyPhoneValid = false;
 
       for (let p = 1; p <= numberOfPhones; p++) {
-        const phoneField = `Phone ${p}`;
+        const phoneField = numberOfPhones === 1 ? "Phone" : `Phone ${p}`;
         const phone = (row[phoneField] as string)?.trim() || '';
 
         if (phone) {
@@ -197,28 +223,30 @@ function App() {
           if (isPrisonScrub) {
             try {
               const result = await validatePhone(phone, cache);
+              const phonePrefix = numberOfPhones === 1 ? "Phone" : `Phone ${p}`;
               if (result.valid) {
                 anyPhoneValid = true;
                 // Store phone type and carrier for each phone number
-                row[`Phone ${p} Type`] = result.type || 'unknown';
-                row[`Phone ${p} Carrier`] = result.carrier || 'unknown';
-                row[`Phone ${p} Status`] = result.liveStatus || 'unknown';
-                row[`Phone ${p} Ported`] = result.isPorted ? 'Yes' : 'No';
-                row[`Phone ${p} Roaming`] = result.isRoaming ? 'Yes' : 'No';
+                row[`${phonePrefix} Type`] = result.type || 'unknown';
+                row[`${phonePrefix} Carrier`] = result.carrier || 'unknown';
+                row[`${phonePrefix} Status`] = result.liveStatus || 'unknown';
+                row[`${phonePrefix} Ported`] = result.isPorted ? 'Yes' : 'No';
+                row[`${phonePrefix} Roaming`] = result.isRoaming ? 'Yes' : 'No';
               } else {
-                row[`Phone ${p} Type`] = 'invalid';
-                row[`Phone ${p} Carrier`] = 'N/A';
-                row[`Phone ${p} Status`] = result.liveStatus || 'INVALID';
-                row[`Phone ${p} Ported`] = 'N/A';
-                row[`Phone ${p} Roaming`] = 'N/A';
+                row[`${phonePrefix} Type`] = 'invalid';
+                row[`${phonePrefix} Carrier`] = 'N/A';
+                row[`${phonePrefix} Status`] = result.liveStatus || 'INVALID';
+                row[`${phonePrefix} Ported`] = 'N/A';
+                row[`${phonePrefix} Roaming`] = 'N/A';
               }
             } catch (err) {
               // Error during validation
-              row[`Phone ${p} Type`] = 'error';
-              row[`Phone ${p} Carrier`] = 'N/A';
-              row[`Phone ${p} Status`] = 'ERROR';
-              row[`Phone ${p} Ported`] = 'N/A';
-              row[`Phone ${p} Roaming`] = 'N/A';
+              const phonePrefix = numberOfPhones === 1 ? "Phone" : `Phone ${p}`;
+              row[`${phonePrefix} Type`] = 'error';
+              row[`${phonePrefix} Carrier`] = 'N/A';
+              row[`${phonePrefix} Status`] = 'ERROR';
+              row[`${phonePrefix} Ported`] = 'N/A';
+              row[`${phonePrefix} Roaming`] = 'N/A';
             }
           } else {
             // Basic Scrub: just check if phone exists
@@ -236,7 +264,7 @@ function App() {
       let hasValidEmail = false;
 
       for (let e = 1; e <= numberOfEmails; e++) {
-        const emailField = `Email ${e}`;
+        const emailField = numberOfEmails === 1 ? "Email" : `Email ${e}`;
         const email = (row[emailField] as string)?.trim() || '';
 
         if (email) {
@@ -293,8 +321,10 @@ function App() {
     // Reset all state to start fresh
     setRawData([]);
     setCleanedData([]);
-    setFileLoaded(false);
     setDetectedHeaders([]);
+    setShowMarketSearchModal(false);
+    setShowExportColumnsModal(false);
+    setShowMappingModal(false);
     setError('');
     setProgress(0);
   };
@@ -347,10 +377,17 @@ function App() {
           </section>
         )}
 
+        {!isValidating && cleanedData.length === 0 && (
+          <FilterSettingsSection
+            settings={filterSettings}
+            onSettingsChange={setFilterSettings}
+          />
+        )}
+
         <section className="upload-section">
           <FileUpload
             onFileSelect={handleFileSelect}
-            disabled={isValidating || fileLoaded}
+            disabled={isValidating || rawData.length > 0}
           />
         </section>
 
@@ -360,20 +397,21 @@ function App() {
           </div>
         )}
 
-        {!isValidating && cleanedData.length === 0 && (
-          <>
-            <FilterSettingsSection
-              settings={filterSettings}
-              onSettingsChange={setFilterSettings}
-            />
-            {fileLoaded && (
-              <section className="action-buttons-section">
-                <button onClick={handleMapList} className="map-list-button">
-                  Map List
-                </button>
-              </section>
-            )}
-          </>
+        {showMarketSearchModal && (
+          <MarketSearchModal
+            initialValue={filterSettings.marketSearch}
+            onClose={handleMarketSearchCancel}
+            onContinue={handleMarketSearchContinue}
+          />
+        )}
+
+        {showExportColumnsModal && (
+          <ExportColumnsModal
+            initialPhones={filterSettings.numberOfPhones}
+            initialEmails={filterSettings.numberOfEmails}
+            onClose={handleExportColumnsCancel}
+            onMapCSV={handleExportColumnsMapCSV}
+          />
         )}
 
         {showMappingModal && (
@@ -414,13 +452,6 @@ function App() {
                   <span className="stat-value">{cleanedData.length - filteredData.length}</span>
                 </div>
               </div>
-            </section>
-
-            <section className="filter-section">
-              <FilterSettingsComponent
-                settings={filterSettings}
-                onSettingsChange={setFilterSettings}
-              />
             </section>
 
             <section className="top-export-section">

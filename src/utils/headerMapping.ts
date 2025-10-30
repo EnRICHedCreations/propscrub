@@ -66,6 +66,11 @@ export const normalizeRow = (rawRow: RawRow): CleanedRow => {
   // Add defaults (only for truly optional fields)
   normalized["Tags"] = normalized["Tags"] || "";
 
+  // Auto-populate Opportunity Name with Property Address if Opportunity Name is empty
+  if (!normalized["Opportunity Name"] && normalized["Property Address"]) {
+    normalized["Opportunity Name"] = normalized["Property Address"];
+  }
+
   // Initialize validation flags
   normalized["Missing Phone"] = false;
   normalized["Duplicate Phone"] = false;
@@ -123,6 +128,11 @@ export const normalizeRowWithCustomMapping = (
 
   // Add defaults (only for truly optional fields)
   normalized["Tags"] = normalized["Tags"] || "";
+
+  // Auto-populate Opportunity Name with Property Address if Opportunity Name is empty
+  if (!normalized["Opportunity Name"] && normalized["Property Address"]) {
+    normalized["Opportunity Name"] = normalized["Property Address"];
+  }
 
   // Initialize validation flags
   normalized["Missing Phone"] = false;

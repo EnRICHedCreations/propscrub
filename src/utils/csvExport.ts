@@ -42,27 +42,28 @@ const generateExportFields = (numberOfPhones: number, numberOfEmails: number, is
   // Add fields in the order they should appear
   fields.push("First Name");
   fields.push("Last Name");
-  fields.push("Contact Type");
 
   // Add multiple phone columns with HLR data for Prison Scrub
   for (let i = 1; i <= numberOfPhones; i++) {
-    fields.push(`Phone ${i}`);
+    const phoneLabel = numberOfPhones === 1 ? "Phone" : `Phone ${i}`;
+    fields.push(phoneLabel);
     if (isPrisonScrub) {
-      fields.push(`Phone ${i} Status`);
-      fields.push(`Phone ${i} Type`);
-      fields.push(`Phone ${i} Carrier`);
-      fields.push(`Phone ${i} Ported`);
-      fields.push(`Phone ${i} Roaming`);
+      fields.push(`${phoneLabel} Status`);
+      fields.push(`${phoneLabel} Type`);
+      fields.push(`${phoneLabel} Carrier`);
+      fields.push(`${phoneLabel} Ported`);
+      fields.push(`${phoneLabel} Roaming`);
     }
   }
 
   // Add multiple email columns
   for (let i = 1; i <= numberOfEmails; i++) {
-    fields.push(`Email ${i}`);
+    fields.push(numberOfEmails === 1 ? "Email" : `Email ${i}`);
   }
 
   // Add remaining fields
   fields.push("Property Address");
+  fields.push("Contact Type");
   fields.push("Opportunity Name");
   fields.push("Stage");
   fields.push("Pipeline");
@@ -86,8 +87,8 @@ const transformDataForExport = (
     // Copy base fields
     transformed["First Name"] = String(row["First Name"] || "");
     transformed["Last Name"] = String(row["Last Name"] || "");
-    transformed["Contact Type"] = String(row["Contact Type"] || "");
     transformed["Property Address"] = String(row["Property Address"] || "");
+    transformed["Contact Type"] = String(row["Contact Type"] || "");
     transformed["Opportunity Name"] = String(row["Opportunity Name"] || "");
     transformed["Stage"] = String(row["Stage"] || "");
     transformed["Pipeline"] = String(row["Pipeline"] || "");
@@ -95,21 +96,21 @@ const transformDataForExport = (
 
     // Add phone columns with HLR data for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
-      const phoneField = `Phone ${i}`;
+      const phoneField = numberOfPhones === 1 ? "Phone" : `Phone ${i}`;
       transformed[phoneField] = String(row[phoneField] || "");
 
       if (isPrisonScrub) {
-        transformed[`Phone ${i} Status`] = String(row[`Phone ${i} Status`] || "");
-        transformed[`Phone ${i} Type`] = String(row[`Phone ${i} Type`] || "");
-        transformed[`Phone ${i} Carrier`] = String(row[`Phone ${i} Carrier`] || "");
-        transformed[`Phone ${i} Ported`] = String(row[`Phone ${i} Ported`] || "");
-        transformed[`Phone ${i} Roaming`] = String(row[`Phone ${i} Roaming`] || "");
+        transformed[`${phoneField} Status`] = String(row[`${phoneField} Status`] || "");
+        transformed[`${phoneField} Type`] = String(row[`${phoneField} Type`] || "");
+        transformed[`${phoneField} Carrier`] = String(row[`${phoneField} Carrier`] || "");
+        transformed[`${phoneField} Ported`] = String(row[`${phoneField} Ported`] || "");
+        transformed[`${phoneField} Roaming`] = String(row[`${phoneField} Roaming`] || "");
       }
     }
 
     // Add email columns (get from row data)
     for (let i = 1; i <= numberOfEmails; i++) {
-      const emailField = `Email ${i}`;
+      const emailField = numberOfEmails === 1 ? "Email" : `Email ${i}`;
       transformed[emailField] = String(row[emailField] || "");
     }
 

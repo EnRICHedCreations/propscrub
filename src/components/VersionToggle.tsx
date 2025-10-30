@@ -24,34 +24,26 @@ export const VersionToggle = ({ currentVersion, onVersionChange }: VersionToggle
           </button>
 
           <button
-            className={`version-option prison ${currentVersion === 'prison' ? 'active' : ''}`}
-            onClick={() => onVersionChange('prison')}
+            className={`version-option prison locked`}
+            disabled
           >
             <Lock size={20} />
             <div className="version-info">
               <div className="version-name">Prison Scrub</div>
-              <div className="version-price">25 bubbles per 50 records</div>
+              <div className="version-price">Coming Soon</div>
             </div>
           </button>
         </div>
 
         <div className="version-features">
           {currentVersion === 'basic' ? (
-            <ul className="feature-list">
-              <li>Header normalization</li>
-              <li>Duplicate address detection</li>
-              <li>Email validation</li>
-              <li>CSV export</li>
-            </ul>
+            <p className="feature-description">
+              Clean and organize your lead data with CSV formatting, duplicate detection, market targeting, email validation, and phone validation.
+            </p>
           ) : (
-            <ul className="feature-list premium">
-              <li>All Basic Scrub features</li>
-              <li>Live phone status (LIVE/NOT LIVE)</li>
-              <li>Phone type detection (mobile/landline/voip)</li>
-              <li>Carrier identification</li>
-              <li>Ported number detection</li>
-              <li>Roaming status</li>
-            </ul>
+            <p className="feature-description premium">
+              All Basic Scrub features plus live phone status verification (LIVE/NOT LIVE) and phone type detection (mobile/landline/voip).
+            </p>
           )}
         </div>
       </div>

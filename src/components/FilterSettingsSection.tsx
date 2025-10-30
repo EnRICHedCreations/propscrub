@@ -1,4 +1,5 @@
-import { Settings } from 'lucide-react';
+import { Settings, ChevronDown, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
 import { FilterSettings } from './FilterSettings';
 
 interface FilterSettingsSectionProps {
@@ -7,6 +8,8 @@ interface FilterSettingsSectionProps {
 }
 
 export const FilterSettingsSection = ({ settings, onSettingsChange }: FilterSettingsSectionProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
   const handleToggle = (key: keyof FilterSettings) => {
     onSettingsChange({
       ...settings,
@@ -14,34 +17,20 @@ export const FilterSettingsSection = ({ settings, onSettingsChange }: FilterSett
     });
   };
 
-  const handleDropdownChange = (key: 'numberOfPhones' | 'numberOfEmails', value: number) => {
-    onSettingsChange({
-      ...settings,
-      [key]: value
-    });
-  };
-
-  const handleMarketSearchChange = (value: string) => {
-    onSettingsChange({
-      ...settings,
-      marketSearch: value
-    });
-  };
-
-  // Parse market search to show tags
-  const marketTags = settings.marketSearch
-    .split(',')
-    .map(tag => tag.trim())
-    .filter(tag => tag.length > 0);
-
   return (
     <section className="filter-settings-section">
-      <div className="filter-settings-header">
+      <div
+        className="filter-settings-header clickable"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        style={{ cursor: 'pointer' }}
+      >
+        {isCollapsed ? <ChevronRight size={24} /> : <ChevronDown size={24} />}
         <Settings size={24} />
-        <h2>Configure Data Filters & Export Settings</h2>
+        <h2>Default Settings</h2>
       </div>
 
-      <div className="filter-settings-content">
+      {!isCollapsed && (
+        <div className="filter-settings-content">
         <div className="filter-toggles">
           <h4>Remove Records:</h4>
 
@@ -109,71 +98,8 @@ export const FilterSettingsSection = ({ settings, onSettingsChange }: FilterSett
             </label>
           </div>
         </div>
-
-        <div className="column-settings">
-          <h4>Export Columns:</h4>
-          <p className="column-settings-description">
-            Select how many phone and email columns to include in your export.
-            You'll map these in the next step.
-          </p>
-
-          <div className="dropdown-item">
-            <label>
-              <span># of Phones</span>
-              <select
-                value={settings.numberOfPhones}
-                onChange={(e) => handleDropdownChange('numberOfPhones', Number(e.target.value))}
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="dropdown-item">
-            <label>
-              <span># of Emails</span>
-              <select
-                value={settings.numberOfEmails}
-                onChange={(e) => handleDropdownChange('numberOfEmails', Number(e.target.value))}
-              >
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-              </select>
-            </label>
-          </div>
-
-          <div className="market-search-item">
-            <label>
-              <span>Search the market where you pulled the list?</span>
-              <input
-                type="text"
-                placeholder="e.g., 90210, Los Angeles, CA (comma-separated)"
-                value={settings.marketSearch}
-                onChange={(e) => handleMarketSearchChange(e.target.value)}
-              />
-              {marketTags.length > 0 && (
-                <div className="market-tags">
-                  {marketTags.map((tag, index) => (
-                    <span key={index} className="market-tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </label>
-            <p className="market-search-help">
-              💡 Tip: You can search multiple markets by separating them with commas
-            </p>
-          </div>
-        </div>
       </div>
+      )}
     </section>
   );
 };
