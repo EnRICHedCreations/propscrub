@@ -22,10 +22,12 @@ app.use(express.json({ limit: '50mb' }));
 // Import API handlers
 import exportToGHL from './api/exportToGHL.js';
 import validatePhone from './api/validatePhone.js';
+import getGHLOptions from './api/getGHLOptions.js';
 
 // API routes
 app.all('/api/exportToGHL', (req, res) => exportToGHL(req, res));
 app.all('/api/validatePhone', (req, res) => validatePhone(req, res));
+app.all('/api/getGHLOptions', (req, res) => getGHLOptions(req, res));
 
 // Health check
 app.get('/api/health', (req, res) => {

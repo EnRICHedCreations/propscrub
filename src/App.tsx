@@ -9,6 +9,7 @@ import { ExportToGHLButton } from './components/ExportToGHLButton';
 import { HeaderMappingModal } from './components/HeaderMappingModal';
 import { MarketSearchModal } from './components/MarketSearchModal';
 import { ExportColumnsModal } from './components/ExportColumnsModal';
+import { GHLMappingModal } from './components/GHLMappingModal';
 import { BalanceDisplay } from './components/BalanceDisplay';
 import { PurchaseModal } from './components/PurchaseModal';
 import { VersionToggle, ScrubVersion } from './components/VersionToggle';
@@ -35,6 +36,7 @@ function App() {
   const [showMappingModal, setShowMappingModal] = useState(false);
   const [showMarketSearchModal, setShowMarketSearchModal] = useState(false);
   const [showExportColumnsModal, setShowExportColumnsModal] = useState(false);
+  const [showGHLMappingModal, setShowGHLMappingModal] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [detectedHeaders, setDetectedHeaders] = useState<string[]>([]);
   const [scrubVersion, setScrubVersion] = useState<ScrubVersion>('basic');
@@ -51,6 +53,13 @@ function App() {
     bubbles: 100 // Start with 100 bubbles for testing
   });
   const [isExportingToGHL, setIsExportingToGHL] = useState(false);
+  const [ghlMapping, setGHLMapping] = useState<{
+    contactType: string;
+    pipelineId: string;
+    stageName: string;
+    tags: string[];
+    opportunityName: string;
+  } | null>(null);
 
   const handleFileSelect = async (file: File) => {
     try {
@@ -86,7 +95,9 @@ function App() {
     setDetectedHeaders([]);
     setShowMarketSearchModal(false);
     setShowExportColumnsModal(false);
+    setShowGHLMappingModal(false);
     setShowMappingModal(false);
+    setGHLMapping(null);
     setError('');
     setProgress(0);
   };
@@ -114,12 +125,29 @@ function App() {
       numberOfEmails
     });
     setShowExportColumnsModal(false);
-    setShowMappingModal(true);
+
+    // If in iframe (GHL), show GHL mapping modal first
+    if (isInIframe) {
+      setShowGHLMappingModal(true);
+    } else {
+      setShowMappingModal(true);
+    }
   };
 
   const handleExportColumnsCancel = () => {
     setShowExportColumnsModal(false);
     setShowMarketSearchModal(true);
+  };
+
+  const handleGHLMappingConfirm = (mapping: any) => {
+    setGHLMapping(mapping);
+    setShowGHLMappingModal(false);
+    setShowMappingModal(true);
+  };
+
+  const handleGHLMappingCancel = () => {
+    setShowGHLMappingModal(false);
+    setShowExportColumnsModal(true);
   };
 
   const handleMappingConfirm = async (customMapping: Record<string, string | string[]>) => {
@@ -151,13 +179,29 @@ function App() {
         targetHeaders.push(filterSettings.numberOfEmails === 1 ? "Email" : `Email ${i}`);
       }
 
-      // Add remaining fields
-      targetHeaders.push("Property Address", "Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
+      // Add Property Address (always included)
+      targetHeaders.push("Property Address");
+
+      // Add GHL fields only if in iframe mode
+      if (isInIframe) {
+        targetHeaders.push("Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
+      }
 
       // Normalize using custom mapping with dynamic headers
-      const normalizedData = rawData.map(row =>
-        normalizeRowWithCustomMapping(row, customMapping, targetHeaders)
-      );
+      const normalizedData = rawData.map(row => {
+        const normalized = normalizeRowWithCustomMapping(row, customMapping, targetHeaders);
+
+        // Auto-populate GHL fields if in iframe mode and mapping exists
+        if (isInIframe && ghlMapping) {
+          normalized['Contact Type'] = ghlMapping.contactType;
+          normalized['Opportunity Name'] = ghlMapping.opportunityName;
+          normalized['Stage'] = ghlMapping.stageName;
+          normalized['Pipeline'] = ghlMapping.pipelineId;
+          normalized['Tags'] = ghlMapping.tags.join(', ');
+        }
+
+        return normalized;
+      });
       setCleanedData(normalizedData);
 
       // Deduct cost from balance
@@ -452,6 +496,13 @@ function App() {
             initialEmails={filterSettings.numberOfEmails}
             onClose={handleExportColumnsCancel}
             onMapCSV={handleExportColumnsMapCSV}
+          />
+        )}
+
+        {showGHLMappingModal && (
+          <GHLMappingModal
+            onConfirm={handleGHLMappingConfirm}
+            onCancel={handleGHLMappingCancel}
           />
         )}
 
