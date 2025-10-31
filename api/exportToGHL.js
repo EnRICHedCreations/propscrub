@@ -1,7 +1,7 @@
 // api/exportToGHL.js
 // Export cleaned PropScrub contacts to GoHighLevel
 
-import { upsertContact } from './utils/ghlClient.js';
+import { upsertContact, upsertOpportunity } from './utils/ghlClient.js';
 
 // Custom field IDs from environment
 const CUSTOM_FIELD_IDS = {
@@ -159,6 +159,8 @@ export default async function handler(req, res) {
       created: 0,
       updated: 0,
       failed: 0,
+      opportunitiesCreated: 0,
+      opportunitiesUpdated: 0,
       errors: []
     };
 
@@ -181,6 +183,32 @@ export default async function handler(req, res) {
 
         console.log(`[Export] ${i + 1}/${contacts.length} - ${result.isNew ? 'Created' : 'Updated'}: ${contactData.email || contactData.phone}`);
 
+        // Create opportunity if pipeline/stage data is provided
+        if (row['Pipeline'] && row['Stage'] && result.contactId) {
+          try {
+            const opportunityData = {
+              pipelineId: row['Pipeline'],
+              pipelineStageId: row['Stage'],
+              name: row['Opportunity Name'] || row['Property Address'] || 'PropScrub Lead',
+              status: 'open'
+            };
+
+            const oppResult = await upsertOpportunity(result.contactId, opportunityData);
+
+            if (oppResult.isNew) {
+              results.opportunitiesCreated++;
+            } else {
+              results.opportunitiesUpdated++;
+            }
+
+            console.log(`[Export] ${i + 1}/${contacts.length} - ${oppResult.isNew ? 'Created' : 'Updated'} opportunity: ${opportunityData.name}`);
+
+          } catch (oppError) {
+            console.error(`[Export] Failed to create opportunity for contact ${i + 1}:`, oppError.message);
+            // Don't fail the entire contact export if opportunity creation fails
+          }
+        }
+
         // Small delay to avoid rate limiting (500ms between requests)
         if (i < contacts.length - 1) {
           await new Promise(resolve => setTimeout(resolve, 500));
@@ -197,7 +225,8 @@ export default async function handler(req, res) {
       }
     }
 
-    console.log(`[Export] Complete - Created: ${results.created}, Updated: ${results.updated}, Failed: ${results.failed}`);
+    console.log(`[Export] Complete - Contacts Created: ${results.created}, Updated: ${results.updated}, Failed: ${results.failed}`);
+    console.log(`[Export] Opportunities - Created: ${results.opportunitiesCreated}, Updated: ${results.opportunitiesUpdated}`);
 
     return res.status(200).json({
       success: true,

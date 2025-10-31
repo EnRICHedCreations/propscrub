@@ -116,7 +116,8 @@ export async function upsertContact(contactData) {
     return {
       contact: await updateContact(existingContact.id, contactData),
       isNew: false,
-      existingId: existingContact.id
+      existingId: existingContact.id,
+      contactId: existingContact.id
     };
   } else {
     // Create new contact
@@ -124,7 +125,73 @@ export async function upsertContact(contactData) {
     const result = await createContact(contactData);
     return {
       contact: result.contact,
-      isNew: true
+      isNew: true,
+      contactId: result.contact.id
+    };
+  }
+}
+
+/**
+ * Search opportunities by contact ID
+ */
+export async function searchOpportunitiesByContact(contactId) {
+  try {
+    const result = await ghlRequest(
+      `/opportunities/search?location_id=${GHL_LOCATION_ID}&contact_id=${contactId}`
+    );
+    return result.opportunities || [];
+  } catch (error) {
+    console.error('[GHL] Opportunity search error:', error.message);
+    return [];
+  }
+}
+
+/**
+ * Create new opportunity in GHL
+ */
+export async function createOpportunity(opportunityData) {
+  const payload = {
+    locationId: GHL_LOCATION_ID,
+    ...opportunityData
+  };
+
+  return await ghlRequest('/opportunities/', 'POST', payload);
+}
+
+/**
+ * Update existing opportunity in GHL
+ */
+export async function updateOpportunity(opportunityId, opportunityData) {
+  return await ghlRequest(`/opportunities/${opportunityId}`, 'PUT', opportunityData);
+}
+
+/**
+ * Create or update opportunity for a contact
+ */
+export async function upsertOpportunity(contactId, opportunityData) {
+  // Search for existing opportunity for this contact with same name
+  const existingOpportunities = await searchOpportunitiesByContact(contactId);
+  const existingOpportunity = existingOpportunities.find(
+    opp => opp.name === opportunityData.name && opp.status === 'open'
+  );
+
+  if (existingOpportunity) {
+    console.log(`[GHL] Updating existing opportunity: ${existingOpportunity.id}`);
+    return {
+      opportunity: await updateOpportunity(existingOpportunity.id, opportunityData),
+      isNew: false,
+      opportunityId: existingOpportunity.id
+    };
+  } else {
+    console.log(`[GHL] Creating new opportunity for contact ${contactId}`);
+    const result = await createOpportunity({
+      ...opportunityData,
+      contact_id: contactId
+    });
+    return {
+      opportunity: result.opportunity,
+      isNew: true,
+      opportunityId: result.opportunity?.id
     };
   }
 }
@@ -134,5 +201,9 @@ export default {
   createContact,
   updateContact,
   addTagsToContact,
-  upsertContact
+  upsertContact,
+  searchOpportunitiesByContact,
+  createOpportunity,
+  updateOpportunity,
+  upsertOpportunity
 };
