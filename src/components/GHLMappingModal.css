@@ -60,6 +60,20 @@
   margin-top: -0.25rem;
 }
 
+.info-box {
+  padding: 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  color: #1e40af;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.info-box strong {
+  font-weight: 600;
+}
+
 .tags-list {
   display: flex;
   flex-direction: column;

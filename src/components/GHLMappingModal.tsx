@@ -16,7 +16,6 @@ interface GHLMapping {
   pipelineId: string;
   stageId: string;
   tags: string[];
-  opportunityName: string;
 }
 
 interface GHLMappingModalProps {
@@ -33,8 +32,7 @@ export function GHLMappingModal({ onConfirm, onCancel }: GHLMappingModalProps) {
     contactType: 'seller',
     pipelineId: '',
     stageId: '',
-    tags: [],
-    opportunityName: 'PropScrub Lead'
+    tags: []
   });
 
   const [selectedPipeline, setSelectedPipeline] = useState<string>('');
@@ -142,20 +140,8 @@ export function GHLMappingModal({ onConfirm, onCancel }: GHLMappingModalProps) {
               </select>
             </div>
 
-            {/* Opportunity Name */}
-            <div className="form-group">
-              <label htmlFor="opportunityName">
-                Opportunity Name <span className="required">*</span>
-              </label>
-              <input
-                id="opportunityName"
-                type="text"
-                value={mapping.opportunityName}
-                onChange={(e) => setMapping({ ...mapping, opportunityName: e.target.value })}
-                className="form-input"
-                placeholder="e.g., PropScrub Lead"
-              />
-              <small className="form-hint">This will be the opportunity title in GHL</small>
+            <div className="info-box">
+              <strong>Note:</strong> Opportunity Name will automatically use the Property Address from each record.
             </div>
 
             {/* Pipeline */}

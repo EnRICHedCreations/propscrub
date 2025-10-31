@@ -6,6 +6,7 @@ interface HeaderMappingModalProps {
   detectedHeaders: string[];
   numberOfPhones: number;
   numberOfEmails: number;
+  isInIframe?: boolean;
   onConfirm: (mapping: Record<string, string | string[]>) => void;
   onCancel: () => void;
 }
@@ -14,6 +15,7 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
   detectedHeaders,
   numberOfPhones,
   numberOfEmails,
+  isInIframe = false,
   onConfirm,
   onCancel,
 }) => {
@@ -31,11 +33,16 @@ export const HeaderMappingModal: React.FC<HeaderMappingModalProps> = ({
       headers.push(numberOfEmails === 1 ? "Email" : `Email ${i}`);
     }
 
-    // Add remaining fields
-    headers.push("Property Address", "Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
+    // Add Property Address (always included)
+    headers.push("Property Address");
+
+    // Add GHL fields only if in iframe mode
+    if (isInIframe) {
+      headers.push("Contact Type", "Opportunity Name", "Stage", "Pipeline", "Tags");
+    }
 
     return headers;
-  }, [numberOfPhones, numberOfEmails]);
+  }, [numberOfPhones, numberOfEmails, isInIframe]);
 
   // Mapping: Target field -> Source column(s)
   // String = single column, String[] = merged columns

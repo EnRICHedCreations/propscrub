@@ -58,7 +58,6 @@ function App() {
     pipelineId: string;
     stageName: string;
     tags: string[];
-    opportunityName: string;
   } | null>(null);
 
   const handleFileSelect = async (file: File) => {
@@ -194,7 +193,8 @@ function App() {
         // Auto-populate GHL fields if in iframe mode and mapping exists
         if (isInIframe && ghlMapping) {
           normalized['Contact Type'] = ghlMapping.contactType;
-          normalized['Opportunity Name'] = ghlMapping.opportunityName;
+          // Use Property Address as Opportunity Name for each record
+          normalized['Opportunity Name'] = normalized['Property Address'] || 'PropScrub Lead';
           normalized['Stage'] = ghlMapping.stageName;
           normalized['Pipeline'] = ghlMapping.pipelineId;
           normalized['Tags'] = ghlMapping.tags.join(', ');
@@ -511,6 +511,7 @@ function App() {
             detectedHeaders={detectedHeaders}
             numberOfPhones={filterSettings.numberOfPhones}
             numberOfEmails={filterSettings.numberOfEmails}
+            isInIframe={isInIframe}
             onConfirm={handleMappingConfirm}
             onCancel={handleMappingCancel}
           />
