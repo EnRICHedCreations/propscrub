@@ -56,7 +56,7 @@ function App() {
   const [ghlMapping, setGHLMapping] = useState<{
     contactType: string;
     pipelineId: string;
-    stageName: string;
+    stageId: string;
     tags: string[];
   } | null>(null);
 
@@ -195,7 +195,7 @@ function App() {
           normalized['Contact Type'] = ghlMapping.contactType;
           // Use Property Address as Opportunity Name for each record
           normalized['Opportunity Name'] = normalized['Property Address'] || 'PropScrub Lead';
-          normalized['Stage'] = ghlMapping.stageName;
+          normalized['Stage'] = ghlMapping.stageId;
           normalized['Pipeline'] = ghlMapping.pipelineId;
           normalized['Tags'] = ghlMapping.tags.join(', ');
         }
