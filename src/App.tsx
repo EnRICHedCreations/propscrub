@@ -370,7 +370,7 @@ function App() {
     try {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
       const filename = `propscrub_cleaned_${timestamp}.csv`;
-      exportToCSV(filteredData, filename, filterSettings.numberOfPhones, filterSettings.numberOfEmails, scrubVersion === 'prison');
+      exportToCSV(filteredData, filename, filterSettings.numberOfPhones, filterSettings.numberOfEmails, scrubVersion === 'prison', isInIframe);
     } catch (err) {
       setError(`Error exporting CSV: ${err}`);
     }

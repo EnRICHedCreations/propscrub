@@ -36,7 +36,7 @@ const convertToCSV = (data: CleanedRow[], fields: string[]): string => {
 /**
  * Generates dynamic export fields based on phone/email column counts
  */
-const generateExportFields = (numberOfPhones: number, numberOfEmails: number, isPrisonScrub: boolean): string[] => {
+const generateExportFields = (numberOfPhones: number, numberOfEmails: number, isPrisonScrub: boolean, includeGHLFields: boolean = false): string[] => {
   const fields: string[] = [];
 
   // Add fields in the order they should appear
@@ -61,13 +61,17 @@ const generateExportFields = (numberOfPhones: number, numberOfEmails: number, is
     fields.push(numberOfEmails === 1 ? "Email" : `Email ${i}`);
   }
 
-  // Add remaining fields
+  // Add Property Address (always included)
   fields.push("Property Address");
-  fields.push("Contact Type");
-  fields.push("Opportunity Name");
-  fields.push("Stage");
-  fields.push("Pipeline");
-  fields.push("Tags");
+
+  // Add GHL fields only if in iframe mode
+  if (includeGHLFields) {
+    fields.push("Contact Type");
+    fields.push("Opportunity Name");
+    fields.push("Stage");
+    fields.push("Pipeline");
+    fields.push("Tags");
+  }
 
   return fields;
 };
@@ -79,7 +83,8 @@ const transformDataForExport = (
   data: CleanedRow[],
   numberOfPhones: number,
   numberOfEmails: number,
-  isPrisonScrub: boolean
+  isPrisonScrub: boolean,
+  includeGHLFields: boolean = false
 ): Record<string, string>[] => {
   return data.map(row => {
     const transformed: Record<string, string> = {};
@@ -88,11 +93,15 @@ const transformDataForExport = (
     transformed["First Name"] = String(row["First Name"] || "");
     transformed["Last Name"] = String(row["Last Name"] || "");
     transformed["Property Address"] = String(row["Property Address"] || "");
-    transformed["Contact Type"] = String(row["Contact Type"] || "");
-    transformed["Opportunity Name"] = String(row["Opportunity Name"] || "");
-    transformed["Stage"] = String(row["Stage"] || "");
-    transformed["Pipeline"] = String(row["Pipeline"] || "");
-    transformed["Tags"] = String(row["Tags"] || "");
+
+    // Copy GHL fields only if in iframe mode
+    if (includeGHLFields) {
+      transformed["Contact Type"] = String(row["Contact Type"] || "");
+      transformed["Opportunity Name"] = String(row["Opportunity Name"] || "");
+      transformed["Stage"] = String(row["Stage"] || "");
+      transformed["Pipeline"] = String(row["Pipeline"] || "");
+      transformed["Tags"] = String(row["Tags"] || "");
+    }
 
     // Add phone columns with HLR data for Prison Scrub
     for (let i = 1; i <= numberOfPhones; i++) {
@@ -126,11 +135,12 @@ export const exportToCSV = (
   filename: string,
   numberOfPhones: number = 1,
   numberOfEmails: number = 1,
-  isPrisonScrub: boolean = false
+  isPrisonScrub: boolean = false,
+  includeGHLFields: boolean = false
 ) => {
   try {
-    const exportFields = generateExportFields(numberOfPhones, numberOfEmails, isPrisonScrub);
-    const transformedData = transformDataForExport(data, numberOfPhones, numberOfEmails, isPrisonScrub);
+    const exportFields = generateExportFields(numberOfPhones, numberOfEmails, isPrisonScrub, includeGHLFields);
+    const transformedData = transformDataForExport(data, numberOfPhones, numberOfEmails, isPrisonScrub, includeGHLFields);
 
     const csv = convertToCSV(transformedData as any, exportFields);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
