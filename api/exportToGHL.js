@@ -153,6 +153,7 @@ export default async function handler(req, res) {
     }
 
     console.log(`[Export] Starting export of ${contacts.length} contacts to GHL`);
+    console.log(`[Export] First row data:`, JSON.stringify(contacts[0], null, 2));
 
     const results = {
       total: contacts.length,
@@ -182,6 +183,10 @@ export default async function handler(req, res) {
         }
 
         console.log(`[Export] ${i + 1}/${contacts.length} - ${result.isNew ? 'Created' : 'Updated'}: ${contactData.email || contactData.phone}`);
+        console.log(`[Export] Contact ID: ${result.contactId}`);
+
+        // Debug: Log row GHL fields
+        console.log(`[Export] Row GHL fields - Pipeline: ${row['Pipeline']}, Stage: ${row['Stage']}, Opportunity Name: ${row['Opportunity Name']}`);
 
         // Create opportunity if pipeline/stage data is provided
         if (row['Pipeline'] && row['Stage'] && result.contactId) {
@@ -193,6 +198,8 @@ export default async function handler(req, res) {
               status: 'open'
             };
 
+            console.log(`[Export] Creating opportunity with data:`, JSON.stringify(opportunityData, null, 2));
+
             const oppResult = await upsertOpportunity(result.contactId, opportunityData);
 
             if (oppResult.isNew) {
@@ -202,11 +209,15 @@ export default async function handler(req, res) {
             }
 
             console.log(`[Export] ${i + 1}/${contacts.length} - ${oppResult.isNew ? 'Created' : 'Updated'} opportunity: ${opportunityData.name}`);
+            console.log(`[Export] Opportunity ID: ${oppResult.opportunityId}`);
 
           } catch (oppError) {
             console.error(`[Export] Failed to create opportunity for contact ${i + 1}:`, oppError.message);
+            console.error(`[Export] Opportunity error details:`, oppError);
             // Don't fail the entire contact export if opportunity creation fails
           }
+        } else {
+          console.log(`[Export] Skipping opportunity - Pipeline: ${row['Pipeline']}, Stage: ${row['Stage']}, ContactId: ${result.contactId}`);
         }
 
         // Small delay to avoid rate limiting (500ms between requests)

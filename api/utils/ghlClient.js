@@ -155,7 +155,10 @@ export async function createOpportunity(opportunityData) {
     ...opportunityData
   };
 
-  return await ghlRequest('/opportunities/', 'POST', payload);
+  console.log('[GHL] Creating opportunity with payload:', JSON.stringify(payload, null, 2));
+  const result = await ghlRequest('/opportunities/', 'POST', payload);
+  console.log('[GHL] Create opportunity result:', JSON.stringify(result, null, 2));
+  return result;
 }
 
 /**
@@ -169,8 +172,12 @@ export async function updateOpportunity(opportunityId, opportunityData) {
  * Create or update opportunity for a contact
  */
 export async function upsertOpportunity(contactId, opportunityData) {
+  console.log(`[GHL] upsertOpportunity called with contactId: ${contactId}, opportunityData:`, JSON.stringify(opportunityData, null, 2));
+
   // Search for existing opportunity for this contact with same name
   const existingOpportunities = await searchOpportunitiesByContact(contactId);
+  console.log(`[GHL] Found ${existingOpportunities.length} existing opportunities for contact ${contactId}`);
+
   const existingOpportunity = existingOpportunities.find(
     opp => opp.name === opportunityData.name && opp.status === 'open'
   );
@@ -188,6 +195,7 @@ export async function upsertOpportunity(contactId, opportunityData) {
       ...opportunityData,
       contact_id: contactId
     });
+    console.log(`[GHL] Opportunity creation result:`, JSON.stringify(result, null, 2));
     return {
       opportunity: result.opportunity,
       isNew: true,
