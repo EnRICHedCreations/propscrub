@@ -193,7 +193,7 @@ export async function upsertOpportunity(contactId, opportunityData) {
     console.log(`[GHL] Creating new opportunity for contact ${contactId}`);
     const result = await createOpportunity({
       ...opportunityData,
-      contact_id: contactId
+      contactId: contactId
     });
     console.log(`[GHL] Opportunity creation result:`, JSON.stringify(result, null, 2));
     return {
